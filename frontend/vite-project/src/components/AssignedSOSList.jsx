@@ -132,6 +132,15 @@ export default function AssignedSOSList() {
         <div className="sos-list" style={{ display: 'grid', gap: '1rem' }}>
             {sosList.map(sos => {
                 const isTracking = trackingIds.has(sos.id);
+
+                // Priority colors to match the map
+                const priorityColors = {
+                    critical: '#dc2626', // Red
+                    high: '#ef4444',     // Light Red
+                    medium: '#f97316',   // Orange
+                    low: '#eab308'       // Yellow
+                };
+                const priorityColor = priorityColors[sos.priority] || '#3b82f6'; // Blue fallback
                 return (
                     <div key={sos.id} className="sos-card" style={{
                         background: 'var(--glass-bg)',
@@ -140,8 +149,19 @@ export default function AssignedSOSList() {
                         padding: '1.5rem',
                         marginBottom: '1rem',
                         position: 'relative',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        paddingLeft: '2.5rem' // Make space for the side bar
                     }}>
+                        {/* Priority Side Bar */}
+                        <div style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: '6px',
+                            backgroundColor: priorityColor,
+                            boxShadow: `2px 0 10px ${priorityColor}44`
+                        }} />
                         {isTracking && (
                             <div style={{
                                 position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
@@ -152,9 +172,21 @@ export default function AssignedSOSList() {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <div>
-                                <span className={`badge ${sos.severity === 'critical' || sos.severity === 'high' ? 'badge-suspended' : 'badge-active'}`}
-                                    style={{ textTransform: 'uppercase', marginBottom: '0.5rem', display: 'inline-block' }}>
-                                    {t('dashboard.assigned.severity', { severity: sos.severity })}
+                                <span
+                                    className="badge"
+                                    style={{
+                                        textTransform: 'uppercase',
+                                        marginBottom: '0.5rem',
+                                        display: 'inline-block',
+                                        background: `${priorityColor}22`,
+                                        color: priorityColor,
+                                        border: `1px solid ${priorityColor}44`,
+                                        fontWeight: 800,
+                                        fontSize: '0.7rem',
+                                        letterSpacing: '0.05em'
+                                    }}
+                                >
+                                    {sos.priority ? `${sos.priority} priority` : t('dashboard.assigned.severity', { severity: sos.severity })}
                                 </span>
                                 <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{t(`sos.types.${sos.emergency_type}`)}</h3>
                                 <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: '0.25rem 0 0' }}>
