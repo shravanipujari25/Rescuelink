@@ -133,7 +133,7 @@ def classify_rule_based(message: str) -> EmergencyResponse | None:
             recommend_sos=False,
             explanation="Welcome message and main features overview.",
             guidance=[
-                "Welcome to GeoGuard!",
+                "Welcome to RescueLink!",
                 "1. Use the 'Send SOS' button for immediate help.",
                 "2. Visit 'Donations' to support ongoing relief.",
                 "3. Check your Dashboard for active emergency updates.",

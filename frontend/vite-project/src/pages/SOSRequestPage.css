@@ -1,0 +1,214 @@
+/* SOS Request Form  */
+
+/* Full page styles */
+.sos-page {
+    /* Full screen modal-like overlay or standalone page style */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0f121a;
+    /* Darker than normal bg */
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.sos-container {
+    background: #1e2433;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    max-height: 95vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.type-grid-large {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.type-card {
+    background: #2a3142;
+    border: 2px solid transparent;
+    padding: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.type-card:hover {
+    background: #333b4d;
+}
+
+.type-card.selected {
+    background: rgba(255, 59, 48, 0.1);
+    /* Red tint */
+    border-color: #ff3b30;
+}
+
+.type-icon {
+    font-size: 2rem;
+}
+
+.type-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.type-desc {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.stepper-input {
+    display: flex;
+    align-items: center;
+    background: #2a3142;
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stepper-input button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.stepper-input input {
+    width: 60px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.text-input {
+    width: 100%;
+    padding: 14px;
+    background: #2a3142;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.submit-btn {
+    width: 100%;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 1.125rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background: #dc2626;
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.back-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.sos-header h1 {
+    font-size: 1.75rem;
+    margin: 0;
+    color: white;
+}
+
+.sos-header p {
+    color: #94a3b8;
+    margin-top: 5px;
+    font-size: 0.95rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+.gps-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.disclaimer {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .sos-container {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

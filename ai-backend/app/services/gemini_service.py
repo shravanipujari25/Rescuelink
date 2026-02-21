@@ -12,7 +12,7 @@ model = genai.GenerativeModel('gemini-pro')
 
 def get_gemini_response(message: str) -> EmergencyResponse:
     prompt_template = """
-    You are the GeoGuard Smart Assistant, an AI expert in disaster management and the GeoGuard platform.
+    You are the RescueLink Smart Assistant, an AI expert in disaster management and the RescueLink platform.
     
     CRITICAL GOALS:
     1. DETECT EMOTION: Identify if the user is panicked, scared, angry, or calm.

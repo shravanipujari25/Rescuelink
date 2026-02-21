@@ -1,0 +1,222 @@
+/* SOS Button Styles */
+.sos-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF3B30, #FF0000);
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    z-index: 1000;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: visible;
+}
+
+.sos-button:active {
+    transform: scale(0.95);
+}
+
+.sos-button.loading {
+    background: #FF9500;
+}
+
+.sos-button.active {
+    background: #4CD964;
+    animation: pulse-green 2s infinite;
+}
+
+.sos-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    font-weight: 800;
+}
+
+.sos-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.sos-text {
+    font-size: 0.7rem;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Ripple Effect */
+.sos-waves {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 59, 48, 0.6);
+    opacity: 0;
+    animation: ripple 2s infinite cubic-bezier(0, 0.2, 0.8, 1);
+}
+
+.wave:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(76, 217, 100, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 217, 100, 0);
+    }
+}
+
+/* Modal Styles */
+.sos-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+}
+
+.sos-modal {
+    background: var(--bg-surface);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-xl);
+}
+
+.sos-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sos-modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.type-btn {
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.type-btn.selected {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: currentColor;
+}
+
+.count-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #334155;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .sos-button {
+        bottom: 20px;
+        right: 20px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .sos-icon {
+        font-size: 1.75rem;
+    }
+}
