@@ -92,7 +92,10 @@ export const adminApi = {
 // ---------------------------------------------------------------------------
 export const sosApi = {
     create: (body) => api('/sos', { method: 'POST', body }),
-    getAssigned: () => api('/sos/assigned'),
+    getAssigned: (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        return api(`/sos/assigned${query ? `?${query}` : ''}`);
+    },
     resolve: (id) => api(`/sos/${id}/resolve`, { method: 'PUT' }),
     updateResponderLocation: (id, body) => api(`/sos/${id}/location`, { method: 'POST', body }),
     getMyActiveSOS: () => api('/sos/my-active'),

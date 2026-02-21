@@ -31,21 +31,55 @@ export const sosRepository = {
         return data;
     },
 
-    async findAssignedTo(userId) {
-        const { data, error } = await supabase
-            .from('sos_requests')
-            .select(`
-                *,
-                user:user_id (
-                    name,
-                    phone
-                )
-            `)
-            .neq('status', 'resolved')  // Show all non-resolved requests
-            .order('created_at', { ascending: false }); // Newest first
+    async findAssignedTo(userId, lat, lng) {
+        let volunteerLat = lat;
+        let volunteerLng = lng;
 
-        if (error) throw new AppError(error.message, 500);
-        return data;
+        // 1. If live coordinates not provided, try fetching registered coordinates from users table
+        if (!volunteerLat || !volunteerLng) {
+            const { data: user, error: userError } = await supabase
+                .from('users')
+                .select('latitude, longitude, role')
+                .eq('id', userId)
+                .single();
+
+            if (!userError && user) {
+                // Admins see everything unrestricted
+                if (user.role === 'admin') {
+                    const { data, error } = await supabase
+                        .from('sos_requests')
+                        .select(`
+                            *,
+                            user:user_id (name, phone)
+                        `)
+                        .neq('status', 'resolved')
+                        .order('created_at', { ascending: false });
+                    if (error) throw new AppError(error.message, 500);
+                    return data;
+                }
+
+                volunteerLat = user.latitude;
+                volunteerLng = user.longitude;
+            }
+        }
+
+        // 2. If we have ANY coordinates (live or registered), use the RPC for radius filtering
+        if (volunteerLat && volunteerLng) {
+            const { data, error } = await supabase
+                .rpc('find_nearby_sos', {
+                    volunteer_lat: parseFloat(volunteerLat),
+                    volunteer_lng: parseFloat(volunteerLng),
+                    radius_km: 20.0
+                });
+
+            if (!error && data) {
+                return data;
+            }
+            if (error) console.error('Spatial Discovery Error:', error);
+        }
+
+        // 3. STRICT RULE: No coordinates = No alerts (except for Admins handled above)
+        return [];
     },
 
     async findById(id) {

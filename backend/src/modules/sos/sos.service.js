@@ -40,10 +40,10 @@ export const sosService = {
         return enrichedSOS;
     },
 
-    async getAssignedSOS(userId) {
-        logger.info({ userId }, 'Fetching assigned SOS requests');
+    async getAssignedSOS(userId, lat, lng) {
+        logger.info({ userId, lat, lng }, 'Fetching assigned SOS requests');
         // Using supabase filter assigned_to = userId
-        return await sosRepository.findAssignedTo(userId);
+        return await sosRepository.findAssignedTo(userId, lat, lng);
     },
 
     async resolveSOS(id, userId) {

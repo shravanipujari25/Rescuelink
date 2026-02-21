@@ -42,7 +42,8 @@ export const sosController = {
     async getAssignedSOS(req, res, next) {
         try {
             const { userId } = req.user;
-            const data = await sosService.getAssignedSOS(userId);
+            const { lat, lng } = req.query;
+            const data = await sosService.getAssignedSOS(userId, lat, lng);
             res.status(200).json({ status: 'success', data });
         } catch (error) {
             next(error);

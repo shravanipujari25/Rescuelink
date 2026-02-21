@@ -1,6 +1,7 @@
 {
     "common": {
-        "demo_notice": "This is a demo button.\n\nPlease log in as a Citizen to send a real SOS alert to nearby responders!"
+        "demo_notice": "This is a demo button.\n\nPlease log in as a Citizen to send a real SOS alert to nearby responders!",
+        "date_locale": "en-IN"
     },
     "nav": {
         "features": "Features",
@@ -157,6 +158,7 @@
                 "citizen": "Citizen",
                 "volunteer": "Volunteer",
                 "ngo": "NGO",
+                "admin": "Administrator",
                 "citizen_desc": "Report incidents & request help during emergencies",
                 "volunteer_desc": "Offer your skills to help during disasters",
                 "ngo_desc": "Coordinate large-scale relief and resource management"

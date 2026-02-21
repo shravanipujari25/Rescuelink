@@ -12,7 +12,20 @@ export default function AssignedSOSList() {
 
     const fetchAssignedSOS = async () => {
         try {
-            const res = await sosApi.getAssigned();
+            let params = {};
+            if (navigator.geolocation) {
+                // We try a fast-timeout check for location to filter nearby
+                const pos = await new Promise((resolve) => {
+                    navigator.geolocation.getCurrentPosition(resolve, () => resolve(null), {
+                        enableHighAccuracy: false,
+                        timeout: 5000
+                    });
+                });
+                if (pos) {
+                    params = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                }
+            }
+            const res = await sosApi.getAssigned(params);
             setSosList(res.data || []);
         } catch (err) {
             console.error(err);
@@ -67,9 +80,9 @@ export default function AssignedSOSList() {
                 });
             },
             {
-                enableHighAccuracy: false, // Fallback to lower accuracy to avoid timeouts
-                timeout: 30000,          // Wait up to 30s
-                maximumAge: 10000        // Accept cached location up to 10s old
+                enableHighAccuracy: false,
+                timeout: 30000,
+                maximumAge: 10000
             }
         );
 
@@ -93,7 +106,7 @@ export default function AssignedSOSList() {
 
     useEffect(() => {
         fetchAssignedSOS();
-        const interval = setInterval(fetchAssignedSOS, 10000); // Poll faster
+        const interval = setInterval(fetchAssignedSOS, 15000);
         return () => {
             clearInterval(interval);
             // Cleanup watches
