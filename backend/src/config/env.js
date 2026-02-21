@@ -22,6 +22,9 @@ const envSchema = z.object({
     SUPABASE_ANON_KEY: z.string().trim().min(1),
     SUPABASE_SERVICE_ROLE_KEY: z.string().trim().min(1),
 
+    // ✅ ADD GEMINI API KEY HERE
+    GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+
     SMTP_HOST: z.string().default('smtp.gmail.com'),
     SMTP_PORT: z.coerce.number().default(587),
     SMTP_USER: z.string().min(1, 'SMTP_USER is required'),
@@ -41,4 +44,8 @@ if (!parsed.success) {
     process.exit(1);
 }
 
+// ✅ Use validated env object
 export const env = parsed.data;
+
+// ✅ Debug log (temporary – remove after testing)
+console.log('Gemini key loaded:', !!env.GEMINI_API_KEY);

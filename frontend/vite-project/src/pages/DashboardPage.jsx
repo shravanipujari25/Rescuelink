@@ -6,6 +6,7 @@ import SOSButton from '../components/SOSButton.jsx';
 import AssignedSOSList from '../components/AssignedSOSList.jsx';
 import ResolvedSOSList from '../components/ResolvedSOSList.jsx';
 import DonationTab from '../components/DonationTab.jsx';
+import IncidentMap from '../components/IncidentMap.jsx';
 import { sosApi } from '../services/api';
 import './Dashboard.css';
 import { useTranslation } from 'react-i18next';
@@ -102,20 +103,38 @@ export default function DashboardPage() {
             setActiveTab('overview');
         }
 
-        if (user?.role === 'citizen') {
-            const fetchSOS = async () => {
-                try {
-                    const res = await sosApi.getMyActiveSOS();
-                    setActiveSOS(res.data || []);
-                } catch (err) {
-                    console.error('Failed to fetch active SOS', err);
+        const fetchSOS = async () => {
+            try {
+                let res;
+                if (user?.role === 'citizen') {
+                    res = await sosApi.getMyActiveSOS();
+                } else {
+                    // Volunteers, NGOs, and Admins see assigned/nearby SOS
+                    res = await sosApi.getAssigned();
                 }
-            };
 
-            fetchSOS();
-            const interval = setInterval(fetchSOS, 10000);
-            return () => clearInterval(interval);
-        }
+                // The backend returns { status: 'success', data: [...] }
+                if (res.status === 'success' || res.success) {
+                    const data = res.data || [];
+                    setActiveSOS(data);
+                    if (data.length > 0) {
+                        console.log('📡 [Dashboard] Fetched SOS Data:');
+                        console.table(data.map(item => ({
+                            id: item.id.slice(0, 8),
+                            type: item.emergency_type,
+                            priority: item.priority || 'MISSING ❌',
+                            description: item.description?.slice(0, 20)
+                        })));
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch SOS for map', err);
+            }
+        };
+
+        fetchSOS();
+        const interval = setInterval(fetchSOS, 10000);
+        return () => clearInterval(interval);
     }, [user, activeTab]);
 
     return (
@@ -228,6 +247,15 @@ export default function DashboardPage() {
                                     </button>
                                 </div>
                             )}
+                        </div>
+
+                        {/* 📍 LEAFLET MAP INTEGRATION */}
+                        <div className="section animate-slideUp delay-100" style={{ marginBottom: 'var(--space-8)' }}>
+                            <div className="section-header">
+                                <h3 className="section-title">📍 {t('dashboard.actions.map.label')}</h3>
+                                <span className="badge badge-active">{t('dashboard.hero.live_updates')}</span>
+                            </div>
+                            <IncidentMap incidents={activeSOS} />
                         </div>
 
                         {user?.role === 'citizen' && activeSOS.length > 0 && (

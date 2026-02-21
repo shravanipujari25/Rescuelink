@@ -12,3 +12,12 @@ class EmergencyResponse(BaseModel):
     guidance: List[str]
     recommend_sos: bool
     explanation: Optional[str] = ""
+
+class TriageResponse(BaseModel):
+    disaster_type: Literal["medical", "flood", "fire", "earthquake", "landslide", "platform", "other"]
+    injured: bool
+    trapped: bool
+    severity_score: int  # 1-10 scale
+    priority: Literal["low", "medium", "high", "critical"]
+    confidence: float
+    source: Literal["rules", "gemini"]

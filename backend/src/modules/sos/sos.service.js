@@ -2,12 +2,13 @@ import { sosRepository } from './sos.repository.js';
 import logger from '../../config/logger.js';
 import { AppError } from '../../middleware/error.middleware.js';
 import { supabase } from '../../config/supabase.js';
+import { aiTriageService } from '../../services/aiTriage.service.js';
 
 export const sosService = {
     async createSOS(userId, data) {
         logger.info({ userId, data }, 'Creating SOS request');
 
-        const sosData = {
+        let sosData = {
             user_id: userId,
             emergency_type: data.emergency_type,
             severity: data.severity || 'medium',
@@ -19,6 +20,22 @@ export const sosService = {
             contact_phone: data.contact_phone,
             status: 'active'
         };
+
+        // 🚨 AI TRIAGE INTEGRATION
+        try {
+            const aiResult = await aiTriageService.getTriage(data.description, userId);
+            if (aiResult) {
+                logger.info({ userId, aiResult }, 'Merging AI Triage data');
+                sosData = {
+                    ...sosData,
+                    ...aiResult,
+                    // If AI identifies a high priority, escalate the severity
+                    severity: aiResult.priority === 'critical' ? 'critical' : (aiResult.priority === 'high' ? 'high' : sosData.severity)
+                };
+            }
+        } catch (err) {
+            logger.error({ userId, err }, 'AI Triage integration failed (non-blocking)');
+        }
 
         const sos = await sosRepository.create(sosData);
         logger.info({ sosId: sos.id }, 'SOS_CREATED');
