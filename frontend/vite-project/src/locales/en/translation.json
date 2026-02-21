@@ -581,5 +581,25 @@
             "suspend_success": "🚫 User suspended.",
             "unsuspend_success": "✅ User unsuspended."
         }
+    },
+    "ngo_search": {
+        "title": "Find Help from NGOs",
+        "subtitle": "Choose an option below to find registered NGOs in our network.",
+        "placeholder": "Enter your area or city",
+        "find_btn": "Find Support",
+        "show_all_btn": "Show All",
+        "looking": "Looking for help...",
+        "empty_title": "Nothing found here",
+        "empty_desc": "Try another area or click 'Show All'.",
+        "filters": {
+            "all": "Show All NGOs",
+            "location": "By My Area"
+        },
+        "card": {
+            "location": "Area",
+            "services": "How they help",
+            "contact": "Contact Person",
+            "general": "General Support"
+        }
     }
 }
