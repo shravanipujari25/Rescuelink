@@ -15,10 +15,12 @@ import PendingPage from './pages/PendingPage.jsx';
 import SOSRequestPage from './pages/SOSRequestPage.jsx';
 import NGOSearchPage from './pages/NGOSearchPage.jsx';
 import SmartAssistant from './components/SmartAssistant.jsx';
+import ReloadPrompt from './components/ReloadPrompt.jsx';
 
 export default function App() {
   return (
     <AuthProvider>
+      <ReloadPrompt />
       <BrowserRouter>
         <Toaster
           position="top-right"
