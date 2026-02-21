@@ -52,11 +52,7 @@ export default function DashboardPage() {
 
     const ACTIONS_BY_ROLE = {
         citizen: [
-            { icon: '🚨', label: t('dashboard.actions.report.label'), desc: t('dashboard.actions.report.desc'), color: 'rgba(239,68,68,0.15)', soon: true },
-            { icon: '🆘', label: t('dashboard.actions.request.label'), desc: t('dashboard.actions.request.desc'), color: 'rgba(245,158,11,0.15)', soon: true },
             { icon: '🔍', label: t('dashboard.actions.ngo_search.label'), desc: t('dashboard.actions.ngo_search.desc'), color: 'rgba(168,85,247,0.15)', path: '/ngos' },
-            { icon: '📍', label: t('dashboard.actions.resources.label'), desc: t('dashboard.actions.resources.desc'), color: 'rgba(59,130,246,0.15)', soon: true },
-            { icon: '📡', label: t('dashboard.actions.updates.label'), desc: t('dashboard.actions.updates.desc'), color: 'rgba(16,185,129,0.15)', soon: true },
         ],
         volunteer: [
             { icon: '📋', label: t('dashboard.actions.tasks.label'), desc: t('dashboard.actions.tasks.desc'), color: 'rgba(59,130,246,0.15)', soon: true },
@@ -72,11 +68,7 @@ export default function DashboardPage() {
         ]
     };
 
-    const ACTIVITY = [
-        { icon: '🟢', text: t('dashboard.activity.verified'), time: t('dashboard.activity.just_now'), color: 'var(--success)' },
-        { icon: '🔵', text: t('dashboard.activity.profile'), time: t('dashboard.activity.today'), color: 'var(--info)' },
-        { icon: '🛡', text: t('dashboard.activity.joined'), time: t('dashboard.activity.today'), color: 'var(--brand-primary)' },
-    ];
+
 
     const roleInfo = ROLE_META[user?.role] || ROLE_META.citizen;
     const actions = ACTIONS_BY_ROLE[user?.role] || ACTIONS_BY_ROLE.citizen;
@@ -92,10 +84,17 @@ export default function DashboardPage() {
     ];
 
     if (user?.role !== 'citizen') {
-        tabs.splice(1, 0, { id: 'assigned', label: t('dashboard.tabs.assigned') });
+        // Only show 'assigned' as a separate tab if NOT an NGO (e.g. volunteer)
+        if (user?.role !== 'ngo') {
+            tabs.splice(1, 0, { id: 'assigned', label: t('dashboard.tabs.assigned') });
+        }
     }
+
+    // Restore 'history' as a tab for all roles, but keep 'donations' as a tab only for non-NGO roles
     tabs.splice(tabs.length - 1, 0, { id: 'history', label: t('dashboard.tabs.history') || '📝 History' });
-    tabs.splice(tabs.length - 1, 0, { id: 'donations', label: t('dashboard.donations.title') });
+    if (user?.role !== 'ngo') {
+        tabs.splice(tabs.length - 1, 0, { id: 'donations', label: t('dashboard.donations.title') });
+    }
 
     useEffect(() => {
         // Safety check: reset activeTab if the role doesn't support the current tab
@@ -228,13 +227,23 @@ export default function DashboardPage() {
                             {!isPending && (
                                 <div className="dash-hero-actions">
                                     {user?.role === 'citizen' ? (
-                                        <button
-                                            id="hero-sos-btn"
-                                            className="btn btn-danger btn-sm"
-                                            onClick={() => document.querySelector('.sos-button')?.click()}
-                                        >
-                                            {t('dashboard.hero.send_sos')}
-                                        </button>
+                                        <>
+                                            <button
+                                                id="hero-sos-btn"
+                                                className="btn btn-danger"
+                                                onClick={() => document.querySelector('.sos-button')?.click()}
+                                                style={{ padding: '0.75rem 2rem' }}
+                                            >
+                                                {t('dashboard.hero.send_sos')}
+                                            </button>
+                                            <button
+                                                className="btn btn-primary"
+                                                onClick={() => navigate('/ngos')}
+                                                style={{ background: 'rgba(168,85,247,0.8)', border: 'none', padding: '0.75rem 2rem' }}
+                                            >
+                                                {t('dashboard.actions.ngo_search.label')}
+                                            </button>
+                                        </>
                                     ) : (
                                         <button id="quick-action-btn" className="btn btn-primary btn-sm" onClick={handleComingSoon}>
                                             {user?.role === 'volunteer'
@@ -242,9 +251,11 @@ export default function DashboardPage() {
                                                 : t('dashboard.hero.manage_resources')}
                                         </button>
                                     )}
-                                    <button className="btn btn-ghost btn-sm" onClick={handleComingSoon}>
-                                        {t('dashboard.hero.live_updates')}
-                                    </button>
+                                    {user?.role !== 'citizen' && (
+                                        <button className="btn btn-ghost btn-sm" onClick={handleComingSoon}>
+                                            {t('dashboard.hero.live_updates')}
+                                        </button>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -327,86 +338,29 @@ export default function DashboardPage() {
                             </div>
                         )}
 
-                        <div className="stats-grid animate-fadeIn delay-100">
-                            <div className="stat-card">
-                                <div className="stat-icon brand">📋</div>
-                                <div>
-                                    <div className="stat-label">{t('dashboard.stats.role')}</div>
-                                    <div className="stat-value" style={{ fontSize: '1.125rem', textTransform: 'capitalize' }}>
-                                        {t(`auth.signup.role_cards.${user?.role}`)}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-icon blue">🔒</div>
-                                <div>
-                                    <div className="stat-label">{t('dashboard.stats.status')}</div>
-                                    <div className="stat-value" style={{ fontSize: '1.125rem', textTransform: 'capitalize' }}>
-                                        {user?.status}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-icon emerald">🛡</div>
-                                <div>
-                                    <div className="stat-label">{t('dashboard.stats.network')}</div>
-                                    <div className="stat-value" style={{ fontSize: '1.125rem' }}>RescueLink</div>
-                                </div>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-icon amber">🆔</div>
-                                <div>
-                                    <div className="stat-label">{t('dashboard.stats.user_id')}</div>
-                                    <div className="stat-value font-mono" style={{ fontSize: '0.875rem' }}>
-                                        {user?.userId?.slice(0, 10)}…
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="section animate-fadeIn delay-200">
-                            <div className="section-header">
-                                <h3 className="section-title">{t('dashboard.sections.quick_actions')}</h3>
-                                <span className="badge badge-new">{t('dashboard.sections.coming_soon')}</span>
-                            </div>
-                            <div className="action-cards">
-                                {actions.map((action) => (
-                                    <div
-                                        key={action.label}
-                                        id={`action-${action.label.replace(/\s+/g, '-').toLowerCase()}`}
-                                        className="action-card"
-                                        onClick={() => action.path ? navigate(action.path) : handleComingSoon()}
-                                        style={{ opacity: isPending ? 0.5 : 1, pointerEvents: isPending ? 'none' : 'auto' }}
-                                    >
-                                        <div className="action-card-icon" style={{ background: action.color }}>
-                                            {action.icon}
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div className="action-card-label">{action.label}</div>
-                                            <div className="action-card-desc">{action.desc}</div>
-                                        </div>
-                                        <span className="action-card-arrow">→</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
 
-                        <div className="section animate-fadeIn delay-300">
-                            <div className="section-header">
-                                <h3 className="section-title">{t('dashboard.sections.recent_activity')}</h3>
-                            </div>
-                            <div className="table-wrap" style={{ padding: 'var(--space-4)' }}>
-                                <div className="activity-list">
-                                    {ACTIVITY.map((item, i) => (
-                                        <div key={i} className="activity-item">
-                                            <div className="activity-dot" style={{ background: item.color }} />
-                                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{item.text}</span>
-                                            <span className="activity-time">{item.time}</span>
-                                        </div>
-                                    ))}
+
+
+                        {user?.role === 'ngo' && (
+                            <>
+                                <div className="section animate-fadeIn" style={{ marginTop: '2.5rem' }}>
+                                    <div className="section-header">
+                                        <h3 className="section-title">🚨 {t('dashboard.tabs.assigned')}</h3>
+                                    </div>
+                                    <AssignedSOSList />
                                 </div>
-                            </div>
-                        </div>
+
+
+
+                                <div className="section animate-fadeIn" style={{ marginTop: '2.5rem' }}>
+                                    <div className="section-header">
+                                        <h3 className="section-title">💰 {t('dashboard.donations.title')}</h3>
+                                    </div>
+                                    <DonationTab user={user} />
+                                </div>
+                            </>
+                        )}
                     </>
                 )}
 
@@ -421,7 +375,7 @@ export default function DashboardPage() {
                             <div className="profile-avatar">{roleInfo.icon}</div>
                             <div className="profile-info">
                                 <div className="profile-name">
-                                    {user?.role === 'admin' ? t('admin.topbar.admin_user') : `${t(`auth.signup.role_cards.${user?.role}`)} ${t('dashboard.profile.field_role')}`}
+                                    {user?.role === 'ngo' ? user?.ngo_name : (user?.name || t('admin.topbar.admin_user'))}
                                 </div>
                                 <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>{t('dashboard.profile.joined')}</div>
                                 <div className="profile-meta">
@@ -436,6 +390,7 @@ export default function DashboardPage() {
                                 <span className="table-title">{t('dashboard.profile.details')}</span>
                             </div>
                             {[
+                                { label: t('dashboard.profile.field_name', 'Full Name'), value: user?.role === 'ngo' ? user?.ngo_name : user?.name },
                                 { label: t('dashboard.profile.field_uid'), value: user?.userId, mono: true },
                                 { label: t('dashboard.profile.field_role'), value: t(`auth.signup.role_cards.${user?.role}`) },
                                 { label: t('dashboard.profile.field_status'), value: t(`dashboard.profile.statuses.${user?.status}`) || user?.status },
@@ -496,7 +451,7 @@ export default function DashboardPage() {
                 {activeTab === 'donations' && <DonationTab user={user} />}
             </main>
             {user?.role === 'citizen' && <SOSButton />}
-        </div>
+        </div >
     );
 }
 

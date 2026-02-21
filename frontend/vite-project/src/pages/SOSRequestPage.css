@@ -175,11 +175,12 @@
     margin-bottom: 15px;
 }
 
-.form-group label {
+.form-group label,
+.section-label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #cbd5e1;
+    color: #ffffff;
     font-size: 0.9rem;
 }
 

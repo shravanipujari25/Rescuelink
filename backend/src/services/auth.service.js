@@ -210,7 +210,7 @@ export const loginUser = async (data, requestId) => {
 
     const { data: user, error } = await supabase
         .from('users')
-        .select('id, role, status, verification_status, password_hash, email_verified')
+        .select('id, role, status, verification_status, password_hash, email_verified, name, ngo_name, contact_person')
         .eq('email', email)
         .maybeSingle();
 
@@ -254,7 +254,15 @@ export const loginUser = async (data, requestId) => {
 
     logger.info({ requestId, userId: user.id, role: user.role }, 'Login success');
 
-    return { userId: user.id, role: user.role, status: user.status, token };
+    return {
+        userId: user.id,
+        role: user.role,
+        status: user.status,
+        name: user.name,
+        ngo_name: user.ngo_name,
+        contact_person: user.contact_person,
+        token
+    };
 };
 
 // ---------------------------------------------------------------------------

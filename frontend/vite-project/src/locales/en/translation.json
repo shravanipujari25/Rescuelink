@@ -1,6 +1,6 @@
 {
     "common": {
-        "demo_notice": "This is a demo button.\n\nPlease log in as a Citizen to send a real SOS alert to nearby responders!",
+        "demo_notice": "Emergency Alert:\n\nPlease log in as a Citizen to send a real SOS alert to nearby responders!",
         "date_locale": "en-IN"
     },
     "nav": {
@@ -17,7 +17,7 @@
         "title_accent": "every second counts",
         "subtitle": "RescueLink connects citizens, volunteers, NGOs, and administrators to coordinate relief efforts in real time. Built for resilience.",
         "join_network": "Join the Network",
-        "emergency_demo": "Emergency SOS Demo",
+        "emergency_demo": "Emergency SOS",
         "unauthorized": {
             "title": "Access Denied",
             "description": "You don't have permission to view this page. This area is restricted to specific roles.",
@@ -130,6 +130,12 @@
             "create_one": "Create one free",
             "back_home": "← Back to home",
             "success": "Welcome back! Signed in as {{role}}.",
+            "roles": {
+                "citizen": "Citizen",
+                "volunteer": "Volunteer",
+                "ngo": "NGO",
+                "admin": "Administrator"
+            },
             "errors": {
                 "email_required": "Email address is required",
                 "password_required": "Password is required",
@@ -267,7 +273,7 @@
                 "acquiring": "Acquiring precise GPS location..."
             },
             "sections": {
-                "type": "1. What is the emergency?",
+                "type": "What is the emergency?",
                 "people": "2. People at Risk",
                 "contact": "3. Additional Contact (Optional)",
                 "desc": "4. Situation Description (Optional)"
@@ -372,8 +378,8 @@
                 "desc": "Ask for assistance or resources"
             },
             "ngo_search": {
-                "label": "Search NGOs",
-                "desc": "Find area-wise NGOs for help"
+                "label": "Find Help from NGOs",
+                "desc": "Connect with local organizations for aid and support"
             },
             "resources": {
                 "label": "View Nearby Resources",
@@ -434,6 +440,7 @@
             "desc": "Your account information and settings",
             "joined": "Joined RescueLink Network",
             "details": "Account Details",
+            "field_name": "Full Name",
             "field_uid": "User ID",
             "field_role": "Role",
             "field_status": "Account Status",
@@ -549,6 +556,10 @@
             "review_notice": "NGO and volunteer registrations need your review.",
             "review_now": "Review now →",
             "breakdown": "📈 Status Breakdown",
+            "sos_total": "Total SOS",
+            "sos_active": "Active SOS",
+            "sos_resolved": "Resolved SOS",
+            "donations_total": "Funds Raised",
             "loading": "Loading platform data…"
         },
         "pending": {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { sosApi, aiApi } from '../services/api';
+import { sosApi } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import './SOSRequestPage.css';
 
@@ -47,25 +47,6 @@ export default function SOSRequestPage() {
             );
         }
     }, [t]);
-
-    const handleAIClassify = async () => {
-        if (!formData.description.trim()) return;
-        setLoading(true);
-        try {
-            const res = await aiApi.emergencyAssistant(formData.description);
-            if (res.classification && res.classification !== 'other') {
-                setFormData(p => ({ ...p, emergency_type: res.classification }));
-                toast.success(t('sos.messages.ai_success') || 'AI correctly identified the emergency!');
-            } else {
-                toast(t('sos.messages.ai_unsure') || 'AI is unsure, please select manually.', { icon: '🤔' });
-            }
-        } catch (err) {
-            console.error('AI Classification failed', err);
-            toast.error('AI Assistant is currently unavailable.');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -161,18 +142,7 @@ export default function SOSRequestPage() {
                     </div>
 
                     <div className="form-group">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <label style={{ margin: 0 }}>{t('sos.request.sections.desc')}</label>
-                            <button
-                                type="button"
-                                className="btn btn-ghost btn-xs"
-                                onClick={handleAIClassify}
-                                disabled={loading || !formData.description.trim()}
-                                style={{ gap: '6px', color: 'var(--brand-primary)' }}
-                            >
-                                🪄 {t('sos.request.ai_classify') || 'AI Magic Classify'}
-                            </button>
-                        </div>
+                        <label>{t('sos.request.sections.desc')}</label>
                         <textarea
                             rows="3"
                             placeholder={t('sos.request.placeholders.desc')}
@@ -180,19 +150,9 @@ export default function SOSRequestPage() {
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                             className="text-input"
                         ></textarea>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                            {t('sos.request.ai_hint') || 'Pro tip: Type your emergency details and click "AI Magic Classify" to auto-fill the type.'}
-                        </p>
                     </div>
 
-                    <div className="gps-status">
-                        <span className="gps-icon">{location ? '📍' : '📡'}</span>
-                        {location ? (
-                            <span className="text-success">{t('sos.request.location.acquired', { lat: location.latitude.toFixed(4), lng: location.longitude.toFixed(4) })}</span>
-                        ) : (
-                            <span className="text-warning">{t('sos.request.location.acquiring')}</span>
-                        )}
-                    </div>
+
 
                     <button
                         type="submit"

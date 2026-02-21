@@ -71,6 +71,9 @@ export const login = asyncHandler(async (req, res) => {
             userId: result.userId,
             role: result.role,
             status: result.status,
+            name: result.name,
+            ngo_name: result.ngo_name,
+            contact_person: result.contact_person,
             token: result.token,
         },
     });

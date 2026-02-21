@@ -79,6 +79,14 @@ export default function AdminPage() {
             color: stats.pendingApproval > 0 ? 'brand' : 'emerald',
             highlight: stats.pendingApproval > 0,
         },
+        {
+            icon: '🚨', label: t('admin.overview.sos_active'), value: stats.sos?.active || 0,
+            color: (stats.sos?.active || 0) > 0 ? 'red' : 'emerald',
+            highlight: (stats.sos?.active || 0) > 0,
+        },
+        { icon: '🆘', label: t('admin.overview.sos_total'), value: stats.sos?.total || 0, color: 'slate' },
+        { icon: '🏁', label: t('admin.overview.sos_resolved'), value: stats.sos?.resolved || 0, color: 'emerald' },
+        { icon: '💰', label: t('admin.overview.donations_total'), value: `₹${(stats.totalRaised || 0).toLocaleString()}`, color: 'blue' },
     ] : [];
 
     return (

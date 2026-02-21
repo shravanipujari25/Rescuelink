@@ -35,8 +35,8 @@ export default function LoginPage() {
         setLoading(true);
         try {
             const res = await authApi.login(form);
-            const { token, userId, role, status } = res.data;
-            login({ userId, role, status }, token);
+            const { token, userId, role, status, name, ngo_name, contact_person } = res.data;
+            login({ userId, role, status, name, ngo_name, contact_person }, token);
             toast.success(t('auth.login.success', { role }));
             if (role === 'admin') navigate('/admin', { replace: true });
             else navigate(from, { replace: true });
@@ -150,7 +150,6 @@ export default function LoginPage() {
                         { icon: '🏠', label: t('auth.login.roles.citizen') },
                         { icon: '🤝', label: t('auth.login.roles.volunteer') },
                         { icon: '🏢', label: t('auth.login.roles.ngo') },
-                        { icon: '🔑', label: t('auth.login.roles.admin') },
                     ].map(r => (
                         <span
                             key={r.label}

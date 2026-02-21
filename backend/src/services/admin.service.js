@@ -206,11 +206,39 @@ export const getDashboardStats = async (requestId) => {
         throw new AppError('Failed to fetch stats.', 500);
     }
 
+    // 2. Fetch SOS metric count
+    const { data: sosData, error: sosError } = await supabase
+        .from('sos_requests')
+        .select('status');
+
+    if (sosError) {
+        logger.error({ requestId, err: sosError }, 'Failed to fetch SOS stats');
+        // We don't throw here to avoid breaking the whole dashboard if SOS table fails
+    }
+
+    // 3. Fetch Donation totals
+    const { data: donationData, error: donationError } = await supabase
+        .from('donations')
+        .select('amount')
+        .eq('status', 'completed');
+
+    if (donationError) {
+        logger.error({ requestId, err: donationError }, 'Failed to fetch donation stats');
+    }
+
+    const totalRaised = donationData?.reduce((sum, d) => sum + (Number(d.amount) || 0), 0) || 0;
+
     const stats = {
         total: data.length,
         byRole: { citizen: 0, ngo: 0, volunteer: 0, admin: 0 },
         byStatus: { active: 0, inactive: 0, pending: 0, unverified: 0, suspended: 0 },
         pendingApproval: 0,
+        totalRaised,
+        sos: {
+            total: sosData?.length || 0,
+            active: sosData?.filter(s => s.status === 'active' || s.status === 'assigned').length || 0,
+            resolved: sosData?.filter(s => s.status === 'resolved').length || 0,
+        }
     };
 
     for (const user of data) {
