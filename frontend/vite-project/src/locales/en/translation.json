@@ -1,0 +1,585 @@
+{
+    "common": {
+        "demo_notice": "This is a demo button.\n\nPlease log in as a Citizen to send a real SOS alert to nearby responders!"
+    },
+    "nav": {
+        "features": "Features",
+        "who_its_for": "Who it's for",
+        "get_started": "Get Started",
+        "dashboard": "Dashboard",
+        "signin": "Sign In",
+        "register": "Register"
+    },
+    "hero": {
+        "eyebrow": "India's Disaster Coordination Platform",
+        "title_part1": "When disaster strikes,",
+        "title_accent": "every second counts",
+        "subtitle": "RescueLink connects citizens, volunteers, NGOs, and administrators to coordinate relief efforts in real time. Built for resilience.",
+        "join_network": "Join the Network",
+        "emergency_demo": "Emergency SOS Demo",
+        "unauthorized": {
+            "title": "Access Denied",
+            "description": "You don't have permission to view this page. This area is restricted to specific roles.",
+            "dashboard_btn": "→ My Dashboard",
+            "home_btn": "← Home"
+        },
+        "stats": {
+            "user_roles": "User Roles",
+            "secure_auth": "Secure Auth",
+            "email_verify": "Email Verify",
+            "always_on": "Always On"
+        },
+        "features": {
+            "tag": "Platform Features",
+            "title": "Everything needed for effective disaster response",
+            "subtitle": "A comprehensive suite of tools designed to work in the most critical moments.",
+            "reporting": {
+                "title": "Instant Incident Reporting",
+                "desc": "Citizens can report disasters, accidents, and emergencies in real-time directly from their phones."
+            },
+            "alerts": {
+                "title": "Real-time Alerts",
+                "desc": "Receive live alerts about nearby disasters and evacuation notices directly on the platform."
+            },
+            "volunteer": {
+                "title": "Volunteer Coordination",
+                "desc": "Volunteers are matched with tasks based on their skills, location, and availability."
+            },
+            "ngo": {
+                "title": "NGO Operations Hub",
+                "desc": "NGOs can manage resources, coordinate teams, and track relief operations from one dashboard."
+            },
+            "map": {
+                "title": "Live Operations Map",
+                "desc": "See active incidents, relief zones, and resource distribution on a real-time map."
+            },
+            "rbac": {
+                "title": "Secure Role-Based Access",
+                "desc": "Every user gets a role-specific experience — citizens, volunteers, NGOs, and admins all have tailored access."
+            }
+        },
+        "roles": {
+            "tag": "Who It's For",
+            "title": "One platform, four roles",
+            "subtitle": "Every stakeholder in disaster relief has a tailored experience, from on-the-ground citizens to platform administrators.",
+            "citizen": {
+                "title": "Citizens",
+                "badge": "Citizen",
+                "perks": [
+                    "Report incidents instantly",
+                    "Request emergency help",
+                    "Access local resources",
+                    "Get real-time alerts"
+                ]
+            },
+            "volunteer": {
+                "title": "Volunteers",
+                "badge": "Volunteer",
+                "perks": [
+                    "Browse task board by skill",
+                    "Check into deployment zones",
+                    "Submit field reports",
+                    "Connect with NGOs"
+                ]
+            },
+            "ngo": {
+                "title": "NGOs",
+                "badge": "NGO",
+                "perks": [
+                    "Manage resources & inventory",
+                    "Coordinate volunteer teams",
+                    "View live operations map",
+                    "Generate impact reports"
+                ]
+            },
+            "admin": {
+                "title": "Administrators",
+                "badge": "Admin",
+                "perks": [
+                    "Approve NGO & volunteer accounts",
+                    "Monitor platform health",
+                    "Manage all users",
+                    "View dashboard analytics"
+                ]
+            }
+        },
+        "cta": {
+            "tag": "Start Today",
+            "title": "Be the help someone needs today",
+            "desc": "Join thousands of citizens, volunteers, and NGOs already making a difference through RescueLink.",
+            "btn": "Create Free Account →"
+        },
+        "footer": {
+            "subtitle": "Disaster Management Platform",
+            "credit": "Built with ❤️ for disaster readiness"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome back",
+            "subtitle": "Sign in to your account to continue",
+            "email_label": "Email Address",
+            "password_label": "Password",
+            "password_placeholder": "Your password",
+            "show_pw": "Show password",
+            "hide_pw": "Hide password",
+            "submit_btn": "Sign In →",
+            "submitting_btn": "Signing in…",
+            "no_account": "Don't have an account?",
+            "create_one": "Create one free",
+            "back_home": "← Back to home",
+            "success": "Welcome back! Signed in as {{role}}.",
+            "errors": {
+                "email_required": "Email address is required",
+                "password_required": "Password is required",
+                "email_verify": "Please verify your email first."
+            },
+            "toast": {
+                "success": "Account created! Check your email for the OTP.",
+                "verify_code": "Enter the 6-digit code",
+                "resend": "New code sent! Check your inbox.",
+                "verify_success": "Email verified!",
+                "verified_login": "Email verified! You can now sign in."
+            }
+        },
+        "signup": {
+            "title": "Join the network",
+            "subtitle": "Who are you signing up as?",
+            "continue_as": "Continue as {{role}} →",
+            "already_have_account": "Already have an account?",
+            "signin": "Sign in",
+            "steps": {
+                "role": "Role",
+                "details": "Details",
+                "verify": "Verify"
+            },
+            "role_cards": {
+                "citizen": "Citizen",
+                "volunteer": "Volunteer",
+                "ngo": "NGO",
+                "citizen_desc": "Report incidents & request help during emergencies",
+                "volunteer_desc": "Offer your skills to help during disasters",
+                "ngo_desc": "Coordinate large-scale relief and resource management"
+            },
+            "volunteer_types": {
+                "medical": "Medical / First Aid",
+                "rescue": "Search & Rescue",
+                "logistics": "Logistics & Delivery",
+                "communication": "Communication",
+                "shelter": "Shelter & Housing",
+                "food": "Food Distribution",
+                "translation": "Translation",
+                "other": "Other"
+            },
+            "pw_strength": {
+                "weak": "Weak",
+                "fair": "Fair",
+                "good": "Good",
+                "strong": "Strong",
+                "suffix": "password"
+            },
+            "form": {
+                "title": "{{role}} Registration",
+                "subtitle": "Fill in your details to create your account",
+                "full_name_label": "Full Name",
+                "ngo_name_label": "NGO / Organisation Name",
+                "contact_person_label": "Contact Person",
+                "reg_number_label": "Registration Number",
+                "services_label": "Services Provided",
+                "services_hint": "Comma-separated list — e.g. food, shelter, medical",
+                "skills_label": "Skills",
+                "skills_hint": "Comma-separated — e.g. first aid, driving",
+                "volunteer_type_label": "Volunteer Type",
+                "select_type": "Select type…",
+                "location_label": "Location / City",
+                "email_label": "Email Address",
+                "phone_label": "Phone Number",
+                "password_label": "Password",
+                "confirm_password_label": "Confirm Password",
+                "password_hint": "Min 8 chars • uppercase • lowercase • number",
+                "confirm_hint": "Re-enter your password to confirm",
+                "submit_btn": "Create {{role}} Account →",
+                "submitting_btn": "Creating account…",
+                "change_role_btn": "← Change Role"
+            },
+            "verify": {
+                "title": "Check your inbox",
+                "subtitle": "We sent a 6-digit code to",
+                "label": "Verification Code",
+                "hint": "Enter the 6-digit code from your email.",
+                "submit_btn": "Verify Email ✓",
+                "submitting_btn": "Verifying…",
+                "resend_text": "Didn't receive it?",
+                "resend_btn": "↺ Resend Code",
+                "resending_btn": "Sending…",
+                "back_btn": "← Back to registration"
+            },
+            "errors": {
+                "email_required": "Email is required",
+                "email_invalid": "Enter a valid email",
+                "password_required": "Password is required",
+                "password_min": "Minimum 8 characters",
+                "password_complexity": "Must contain uppercase, lowercase, and a number",
+                "password_match": "Passwords do not match",
+                "name_required": "Full name is required",
+                "phone_required": "Phone number is required",
+                "skills_required": "Skills are required (comma separated)",
+                "volunteer_type_required": "Volunteer type is required",
+                "location_required": "Location is required",
+                "ngo_name_required": "NGO name is required",
+                "contact_person_required": "Contact person is required",
+                "services_required": "Services are required (comma separated)"
+            }
+        },
+        "pending": {
+            "title": "Account Under Review",
+            "status": "Pending Review",
+            "description": "Your email has been verified ✅\nOur admin team is currently reviewing your application.\nYou'll receive an email once your account is approved.",
+            "timeline": {
+                "verified": "Email Verified",
+                "verified_desc": "Your email address is confirmed",
+                "review": "Admin Review",
+                "review_desc": "Our team is reviewing your application",
+                "activated": "Account Activated",
+                "activated_desc": "Full platform access will be granted",
+                "in_progress": "In Progress"
+            },
+            "info": "💡 This usually takes <strong>1–2 business days</strong>. You'll get an email when it's done.",
+            "back_btn": "← Back to Login"
+        }
+    },
+    "sos": {
+        "button": {
+            "text": "SOS",
+            "label": "Trigger Emergency SOS"
+        },
+        "request": {
+            "title": "🚨 Emergency Report",
+            "subtitle": "Please provide details to help responders prepare.",
+            "back_btn": "← Cancel",
+            "submit_btn": "🆘 BROADCAST SOS ALERT",
+            "submitting_btn": "Broadcasting...",
+            "disclaimer": "False reporting is a punishable offense. Only use this for real emergencies.",
+            "location": {
+                "acquired": "Location Acquired: {{lat}}, {{lng}}",
+                "acquiring": "Acquiring precise GPS location..."
+            },
+            "sections": {
+                "type": "1. What is the emergency?",
+                "people": "2. People at Risk",
+                "contact": "3. Additional Contact (Optional)",
+                "desc": "4. Situation Description (Optional)"
+            },
+            "placeholders": {
+                "contact": "Backup phone number",
+                "desc": "Describe the situation, landmarks, or specific needs...",
+                "aria_label_people": "Number of people"
+            }
+        },
+        "types": {
+            "medical": "Medical Emergency",
+            "medical_desc": "Ambulance, First Aid needed",
+            "fire": "Fire Outbreak",
+            "fire_desc": "Firefighters, Rescue needed",
+            "flood": "Flood / Water",
+            "flood_desc": "Trap by water, boat needed",
+            "earthquake": "Earthquake",
+            "earthquake_desc": "Structural collapse, trapped",
+            "trapped": "Trapped / Rubble",
+            "trapped_desc": "Cannot exit building/area",
+            "violence": "Violence / Threat",
+            "violence_desc": "Police / Security needed",
+            "other": "Other Emergency",
+            "other_desc": "Unspecified danger"
+        },
+        "messages": {
+            "location_wait": "Waiting for location...",
+            "select_type": "Please select an emergency type",
+            "success": "SOS Alert Broadcasted! Help is on the way.",
+            "failed": "Failed to send SOS",
+            "location_error": "Location access is required for SOS"
+        }
+    },
+    "dashboard": {
+        "tabs": {
+            "overview": "Overview",
+            "profile": "Profile",
+            "assigned": "🚨 Assigned SOS",
+            "history": "📝 History"
+        },
+        "history": {
+            "title": "History & Resolved",
+            "desc": "Past emergency requests that have been successfully addressed."
+        },
+        "resolved": {
+            "status": "RESOLVED",
+            "by": "Resolved by",
+            "none": "No resolved history found."
+        },
+        "notices": {
+            "pending": "Account Pending Approval",
+            "pending_desc": "Your {{role}} account is under admin review. Full access will be granted once approved — usually 1–2 business days."
+        },
+        "hero": {
+            "welcome": "Welcome back 👋",
+            "status": "Account Status:",
+            "send_sos": "🆘 Send SOS",
+            "view_tasks": "📋 View Task Board",
+            "manage_resources": "📦 Manage Resources",
+            "live_updates": "📡 Live Updates"
+        },
+        "roles": {
+            "citizen": {
+                "heading": "Citizen Portal",
+                "tagline": "Stay informed, report incidents, and connect with relief services."
+            },
+            "volunteer": {
+                "heading": "Volunteer Hub",
+                "tagline": "Coordinate tasks, offer your skills, and see where help is needed."
+            },
+            "ngo": {
+                "heading": "NGO Dashboard",
+                "tagline": "Manage relief operations, track resources, and coordinate teams."
+            }
+        },
+        "sections": {
+            "active_sos": "🚨 Active Emergency Status",
+            "quick_actions": "⚡ Quick Actions",
+            "recent_activity": "🕐 Recent Activity",
+            "coming_soon": "Coming Soon"
+        },
+        "sos_card": {
+            "emergency": "{{type}} Emergency",
+            "reported": "Reported: {{time}}",
+            "status_assigned": "Responder Assigned",
+            "status_requested": "Help Requested",
+            "responder": "👮 Responder:",
+            "contact": "📞 Contact:",
+            "searching": "🔍 Searching for nearby responders...",
+            "live": "📡 LIVE: Help is on the way!",
+            "track": "🗺️ TRACK RESPONDER LOCATION",
+            "waiting_location": "⏳ Responder assigned. Waiting for location signal..."
+        },
+        "actions": {
+            "report": {
+                "label": "Report Incident",
+                "desc": "Alert authorities about an emergency"
+            },
+            "request": {
+                "label": "Request Help",
+                "desc": "Ask for assistance or resources"
+            },
+            "ngo_search": {
+                "label": "Search NGOs",
+                "desc": "Find area-wise NGOs for help"
+            },
+            "resources": {
+                "label": "View Nearby Resources",
+                "desc": "Find shelters and relief centres"
+            },
+            "updates": {
+                "label": "Live Updates",
+                "desc": "Real-time disaster alerts for your area"
+            },
+            "tasks": {
+                "label": "View Task Board",
+                "desc": "See available tasks that need volunteers"
+            },
+            "checkin": {
+                "label": "Check-in to Zone",
+                "desc": "Mark your current deployment zone"
+            },
+            "reports": {
+                "label": "Field Reports",
+                "desc": "Submit updates from the field"
+            },
+            "connect": {
+                "label": "Connect with NGOs",
+                "desc": "Find NGOs that need your skills"
+            },
+            "inventory": {
+                "label": "Manage Resources",
+                "desc": "Track your inventory and supplies"
+            },
+            "roster": {
+                "label": "Volunteer Roster",
+                "desc": "Manage and assign volunteers"
+            },
+            "map": {
+                "label": "Operations Map",
+                "desc": "View your active relief zones"
+            },
+            "impact": {
+                "label": "Impact Reports",
+                "desc": "Generate and export relief reports"
+            }
+        },
+        "activity": {
+            "verified": "Account verified and activated",
+            "profile": "Profile created successfully",
+            "joined": "You joined the RescueLink network",
+            "just_now": "Just now",
+            "today": "Today"
+        },
+        "stats": {
+            "role": "Your Role",
+            "status": "Account Status",
+            "network": "Network",
+            "user_id": "User ID"
+        },
+        "profile": {
+            "title": "My Profile",
+            "desc": "Your account information and settings",
+            "joined": "Joined RescueLink Network",
+            "details": "Account Details",
+            "field_uid": "User ID",
+            "field_role": "Role",
+            "field_status": "Account Status",
+            "field_platform": "Platform",
+            "signout": "🚪 Sign Out",
+            "statuses": {
+                "active": "Active",
+                "pending": "Pending Approval",
+                "suspended": "Suspended",
+                "unverified": "Unverified",
+                "inactive": "Inactive"
+            }
+        },
+        "assigned": {
+            "title": "Assigned Emergencies",
+            "desc": "Respond to SOS requests assigned to you",
+            "loading": "Loading tasks...",
+            "none": "No active emergencies",
+            "none_desc": "There are no active SOS requests at the moment.",
+            "severity": "{{severity}} Severity",
+            "sharing": "📡 Sharing Location...",
+            "start": "跑 Start Response",
+            "resolve": "Mark Resolved",
+            "location_label": "Location",
+            "contact_label": "Contact",
+            "people_label": "People Count",
+            "desc_label": "Description",
+            "view_map": "View on Map ↗",
+            "toast": {
+                "load_fail": "Failed to load assigned SOS requests",
+                "resolve_confirm": "Are you sure you want to mark this emergency as resolved?",
+                "resolved": "SOS Request Resolved ✅",
+                "resolve_fail": "Failed to resolve SOS",
+                "geo_fail": "Geolocation not supported",
+                "sharing_msg": "Sharing live location with citizen 📡",
+                "share_err": "Failed to share location. Server error?",
+                "geo_err": "Location Error: {{message}}",
+                "stop_sharing": "Stopped sharing location"
+            }
+        },
+        "donations": {
+            "title": "Donations & Relief Funds",
+            "desc": "Support relief efforts and track how your contributions are used.",
+            "tabs": {
+                "active": "Active Campaigns",
+                "my": "My Contributions",
+                "create": "New Campaign",
+                "all": "All Activity"
+            },
+            "campaign": {
+                "target": "Target",
+                "raised": "Raised",
+                "by": "Organized by",
+                "donate_btn": "Donate Now",
+                "view_spends": "View Spends",
+                "no_spends": "No spending recorded yet.",
+                "spend_recorded": "Spend Recorded",
+                "proof": "View Proof ↗"
+            },
+            "history": {
+                "title": "Your Donation History",
+                "total": "Total Donated",
+                "none": "You haven't made any donations yet.",
+                "date": "Date",
+                "status": "Status",
+                "amount": "Amount"
+            },
+            "form": {
+                "title": "Donate to {{title}}",
+                "amount_label": "Donation Amount",
+                "confirm_btn": "Proceed to Payment",
+                "success": "Thank you! Your donation was successful. ✅",
+                "create_title": "Start Relief Campaign",
+                "campaign_title": "Campaign Title",
+                "campaign_desc": "Description (How will the funds be used?)",
+                "campaign_target": "Target Amount",
+                "campaign_category": "Category",
+                "submit_campaign": "Launch Campaign →",
+                "spend_title": "Record Expenditure",
+                "spend_amount": "Amount Spent",
+                "spend_proof": "Proof URL (Receipt/Photo)",
+                "submit_spend": "Record Spend →"
+            }
+        },
+        "coming_soon_toast": "This feature is coming soon! 🚧"
+    },
+    "admin": {
+        "sidebar": {
+            "administration": "Administration",
+            "overview": "Overview",
+            "pending": "Pending Approvals",
+            "users": "All Users",
+            "footer_title": "🛡 RescueLink Admin",
+            "footer_ver": "v1.0 · RescueLink Platform"
+        },
+        "topbar": {
+            "admin_badge": "Admin",
+            "admin_user": "Administrator",
+            "signout": "Sign out"
+        },
+        "overview": {
+            "title": "📊 Platform Overview",
+            "desc": "Real-time statistics and user management summary",
+            "total_users": "Total Users",
+            "citizens": "Citizens",
+            "ngos": "NGOs",
+            "volunteers": "Volunteers",
+            "active": "Active",
+            "pending": "Pending Approval",
+            "click_review": "Click to review →",
+            "awaiting": "{{count}} account awaiting approval",
+            "awaiting_plural": "{{count}} accounts awaiting approval",
+            "review_notice": "NGO and volunteer registrations need your review.",
+            "review_now": "Review now →",
+            "breakdown": "📈 Status Breakdown",
+            "loading": "Loading platform data…"
+        },
+        "pending": {
+            "title": "⏳ Pending Approvals",
+            "desc": "Review and approve NGO and volunteer registrations",
+            "empty": "No pending approvals — you're all caught up! 🎉"
+        },
+        "all_users": {
+            "title": "👥 All Users",
+            "desc": "Manage all registered accounts across the platform",
+            "empty": "No users found matching your search.",
+            "search_placeholder": "🔍 Search by name, email, or role…"
+        },
+        "table": {
+            "showing": "Showing {{count}} result",
+            "showing_plural": "Showing {{count}} results",
+            "col_name": "Name / Organisation",
+            "col_email": "Email",
+            "col_role": "Role",
+            "col_status": "Status",
+            "col_joined": "Joined",
+            "col_actions": "Actions",
+            "btn_approve": "✅ Approve",
+            "btn_reject": "❌ Reject",
+            "btn_suspend": "🚫 Suspend",
+            "btn_restore": "↩ Restore",
+            "loading": "Loading users…"
+        },
+        "toast": {
+            "approve_success": "✅ User approved and notified!",
+            "reject_success": "❌ User rejected.",
+            "suspend_success": "🚫 User suspended.",
+            "unsuspend_success": "✅ User unsuspended."
+        }
+    }
+}

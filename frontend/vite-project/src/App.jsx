@@ -13,6 +13,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import PendingPage from './pages/PendingPage.jsx';
 import SOSRequestPage from './pages/SOSRequestPage.jsx';
+import NGOSearchPage from './pages/NGOSearchPage.jsx';
 import SmartAssistant from './components/SmartAssistant.jsx';
 
 export default function App() {
@@ -70,6 +71,10 @@ export default function App() {
           {/* Protected — citizen only */}
           <Route path="/sos/request" element={
             <ProtectedRoute roles={['citizen']}><SOSRequestPage /></ProtectedRoute>
+          } />
+
+          <Route path="/ngos" element={
+            <ProtectedRoute roles={['citizen']}><NGOSearchPage /></ProtectedRoute>
           } />
 
           {/* 403 Unauthorized */}

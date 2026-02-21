@@ -78,7 +78,7 @@ export default function LoginPage() {
                     <div>
                         <div className="auth-app-name">
                             <span>⚡</span>
-                            <span>GeoGuard</span>
+                            <span>RescueLink</span>
                         </div>
                         <h1 className="auth-title">{t('auth.login.title')}</h1>
                         <p className="auth-subtitle">{t('auth.login.subtitle')}</p>

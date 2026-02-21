@@ -87,7 +87,7 @@ export default function AdminPage() {
             <header className="app-topbar">
                 <div className="app-brand">
                     <div className="app-brand-logo">🛡</div>
-                    <span className="app-brand-name">GeoGuard</span>
+                    <span className="app-brand-name">RescueLink</span>
                     <span className="badge badge-admin" style={{ marginLeft: 4 }}>{t('admin.topbar.admin_badge')}</span>
                 </div>
 

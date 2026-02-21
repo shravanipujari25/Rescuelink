@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import toast from 'react-hot-toast';
 import SOSButton from '../components/SOSButton.jsx';
@@ -11,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function DashboardPage() {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('overview');
     const [activeSOS, setActiveSOS] = useState([]);
@@ -51,6 +53,7 @@ export default function DashboardPage() {
         citizen: [
             { icon: '🚨', label: t('dashboard.actions.report.label'), desc: t('dashboard.actions.report.desc'), color: 'rgba(239,68,68,0.15)', soon: true },
             { icon: '🆘', label: t('dashboard.actions.request.label'), desc: t('dashboard.actions.request.desc'), color: 'rgba(245,158,11,0.15)', soon: true },
+            { icon: '🔍', label: t('dashboard.actions.ngo_search.label'), desc: t('dashboard.actions.ngo_search.desc'), color: 'rgba(168,85,247,0.15)', path: '/ngos' },
             { icon: '📍', label: t('dashboard.actions.resources.label'), desc: t('dashboard.actions.resources.desc'), color: 'rgba(59,130,246,0.15)', soon: true },
             { icon: '📡', label: t('dashboard.actions.updates.label'), desc: t('dashboard.actions.updates.desc'), color: 'rgba(16,185,129,0.15)', soon: true },
         ],
@@ -120,7 +123,7 @@ export default function DashboardPage() {
             <header className="app-topbar">
                 <div className="app-brand">
                     <div className="app-brand-logo">🛡</div>
-                    <span className="app-brand-name">GeoGuard</span>
+                    <span className="app-brand-name">RescueLink</span>
                     <div className="app-brand-dot" />
                 </div>
 
@@ -261,7 +264,7 @@ export default function DashboardPage() {
 
                                             {sos.assigned_to ? (
                                                 <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px' }}>
-                                                    <strong>{t('dashboard.sos_card.responder')}</strong> {sos.assigned_user?.name || 'GeoGuard Unit'} <br />
+                                                    <strong>{t('dashboard.sos_card.responder')}</strong> {sos.assigned_user?.name || 'RescueLink Unit'} <br />
                                                     <strong>{t('dashboard.sos_card.contact')}</strong> {sos.assigned_user?.phone || 'N/A'}
                                                 </div>
                                             ) : (
@@ -319,7 +322,7 @@ export default function DashboardPage() {
                                 <div className="stat-icon emerald">🛡</div>
                                 <div>
                                     <div className="stat-label">{t('dashboard.stats.network')}</div>
-                                    <div className="stat-value" style={{ fontSize: '1.125rem' }}>GeoGuard</div>
+                                    <div className="stat-value" style={{ fontSize: '1.125rem' }}>RescueLink</div>
                                 </div>
                             </div>
                             <div className="stat-card">
@@ -344,7 +347,7 @@ export default function DashboardPage() {
                                         key={action.label}
                                         id={`action-${action.label.replace(/\s+/g, '-').toLowerCase()}`}
                                         className="action-card"
-                                        onClick={handleComingSoon}
+                                        onClick={() => action.path ? navigate(action.path) : handleComingSoon()}
                                         style={{ opacity: isPending ? 0.5 : 1, pointerEvents: isPending ? 'none' : 'auto' }}
                                     >
                                         <div className="action-card-icon" style={{ background: action.color }}>
@@ -408,7 +411,7 @@ export default function DashboardPage() {
                                 { label: t('dashboard.profile.field_uid'), value: user?.userId, mono: true },
                                 { label: t('dashboard.profile.field_role'), value: t(`auth.signup.role_cards.${user?.role}`) },
                                 { label: t('dashboard.profile.field_status'), value: t(`dashboard.profile.statuses.${user?.status}`) || user?.status },
-                                { label: t('dashboard.profile.field_platform'), value: 'GeoGuard Disaster Management' },
+                                { label: t('dashboard.profile.field_platform'), value: 'RescueLink Disaster Management' },
                             ].map((row) => (
                                 <div
                                     key={row.label}

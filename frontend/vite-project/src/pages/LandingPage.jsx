@@ -113,7 +113,7 @@ export default function LandingPage() {
             <nav className="landing-nav">
                 <div className="landing-nav-brand">
                     <div className="landing-nav-logo">🛡</div>
-                    <span className="landing-nav-name">GeoGuard</span>
+                    <span className="landing-nav-name">RescueLink</span>
                 </div>
 
                 <div className="landing-nav-links hide-mobile">
@@ -319,7 +319,7 @@ export default function LandingPage() {
             <footer className="landing-footer">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                     <span>🛡</span>
-                    <strong style={{ color: 'var(--text-secondary)' }}>GeoGuard</strong>
+                    <strong style={{ color: 'var(--text-secondary)' }}>RescueLink</strong>
                     <span>— {t('hero.footer.subtitle')}</span>
                 </div>
 

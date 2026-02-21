@@ -100,6 +100,7 @@ function Field({ id, label, type = 'text', placeholder, value, onChange, error, 
 }
 
 function PasswordField({ id, label, value, onChange, error, showPw, setShowPw, hint }) {
+    const { t } = useTranslation();
     return (
         <div className="form-group">
             <label className="form-label" htmlFor={id}>
@@ -311,7 +312,7 @@ export default function SignupPage() {
                         <div className="auth-logo-ring" />
                     </div>
                     <div>
-                        <div className="auth-app-name"><span>⚡</span><span>GeoGuard</span></div>
+                        <div className="auth-app-name"><span>⚡</span><span>RescueLink</span></div>
                         <h1 className="auth-title">{t('auth.signup.title')}</h1>
                         <p className="auth-subtitle">{t('auth.signup.subtitle')}</p>
                     </div>
@@ -466,7 +467,7 @@ export default function SignupPage() {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <div className="auth-app-name" style={{ marginBottom: 0 }}>
-                                <span>⚡</span><span>GeoGuard</span>
+                                <span>⚡</span><span>RescueLink</span>
                             </div>
                         </div>
                     </div>
