@@ -34,25 +34,25 @@
             "tag": "Platform Features",
             "title": "Everything needed for effective disaster response",
             "subtitle": "A comprehensive suite of tools designed to work in the most critical moments.",
-            "reporting": {
-                "title": "Instant Incident Reporting",
-                "desc": "Citizens can report disasters, accidents, and emergencies in real-time directly from their phones."
+            "smart_map": {
+                "title": "Smart Disaster Map",
+                "desc": "Real-time interactive map with AI-powered, severity-based incident visualization."
             },
-            "alerts": {
-                "title": "Real-time Alerts",
-                "desc": "Receive live alerts about nearby disasters and evacuation notices directly on the platform."
+            "ai_triage": {
+                "title": "AI-Powered Triage",
+                "desc": "Automated classification and priority scoring for faster, life-saving response."
+            },
+            "rescue_system": {
+                "title": "Coordinated Rescue System",
+                "desc": "Role-based dashboards connecting citizens, volunteers, NGOs, and admins seamlessly."
+            },
+            "pwa": {
+                "title": "Progressive Web App",
+                "desc": "Installable, offline-ready disaster response platform across mobile and desktop."
             },
             "volunteer": {
                 "title": "Volunteer Coordination",
                 "desc": "Volunteers are matched with tasks based on their skills, location, and availability."
-            },
-            "ngo": {
-                "title": "NGO Operations Hub",
-                "desc": "NGOs can manage resources, coordinate teams, and track relief operations from one dashboard."
-            },
-            "map": {
-                "title": "Live Operations Map",
-                "desc": "See active incidents, relief zones, and resource distribution on a real-time map."
             },
             "rbac": {
                 "title": "Secure Role-Based Access",

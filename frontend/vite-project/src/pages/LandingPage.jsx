@@ -38,34 +38,34 @@ export default function LandingPage() {
 
     const FEATURES = [
         {
-            icon: '🚨',
-            emoji_bg: 'rgba(239,68,68,0.15)',
-            title: t('hero.features.reporting.title'),
-            desc: t('hero.features.reporting.desc'),
+            icon: '🗺',
+            emoji_bg: 'rgba(16,185,129,0.15)',
+            title: t('hero.features.smart_map.title'),
+            desc: t('hero.features.smart_map.desc'),
         },
         {
-            icon: '📡',
+            icon: '🧠',
+            emoji_bg: 'rgba(168,85,247,0.15)',
+            title: t('hero.features.ai_triage.title'),
+            desc: t('hero.features.ai_triage.desc'),
+        },
+        {
+            icon: '🚑',
+            emoji_bg: 'rgba(239,68,68,0.15)',
+            title: t('hero.features.rescue_system.title'),
+            desc: t('hero.features.rescue_system.desc'),
+        },
+        {
+            icon: '📱',
             emoji_bg: 'rgba(59,130,246,0.15)',
-            title: t('hero.features.alerts.title'),
-            desc: t('hero.features.alerts.desc'),
+            title: t('hero.features.pwa.title'),
+            desc: t('hero.features.pwa.desc'),
         },
         {
             icon: '🤝',
             emoji_bg: 'rgba(245,158,11,0.15)',
             title: t('hero.features.volunteer.title'),
             desc: t('hero.features.volunteer.desc'),
-        },
-        {
-            icon: '🏢',
-            emoji_bg: 'rgba(168,85,247,0.15)',
-            title: t('hero.features.ngo.title'),
-            desc: t('hero.features.ngo.desc'),
-        },
-        {
-            icon: '🗺',
-            emoji_bg: 'rgba(16,185,129,0.15)',
-            title: t('hero.features.map.title'),
-            desc: t('hero.features.map.desc'),
         },
         {
             icon: '🔑',
