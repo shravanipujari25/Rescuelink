@@ -7,6 +7,7 @@ import AssignedSOSList from '../components/AssignedSOSList.jsx';
 import ResolvedSOSList from '../components/ResolvedSOSList.jsx';
 import DonationTab from '../components/DonationTab.jsx';
 import IncidentMap from '../components/IncidentMap.jsx';
+import ExtremeSOSFlow from '../components/ExtremeSOSFlow.jsx';
 import { sosApi } from '../services/api';
 import './Dashboard.css';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ export default function DashboardPage() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('overview');
     const [activeSOS, setActiveSOS] = useState([]);
+    const [showDemo, setShowDemo] = useState(false);
 
     const ROLE_META = {
         citizen: {
@@ -158,12 +160,23 @@ export default function DashboardPage() {
                     <div className="app-brand-dot" />
                 </div>
 
-                <nav style={{ display: 'flex', gap: 4 }}>
+                <nav className="topbar-nav" style={{
+                    display: 'flex',
+                    gap: 4,
+                    overflowX: 'auto',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    padding: '0 4px',
+                }}>
                     {tabs.map(t_tab => (
                         <button
                             key={t_tab.id}
                             id={`tab-${t_tab.id}`}
-                            onClick={() => setActiveTab(t_tab.id)}
+                            onClick={() => {
+                                setActiveTab(t_tab.id);
+                                // Optional: scroll button into view if it was hidden
+                                document.getElementById(`tab-${t_tab.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                            }}
                             style={{
                                 padding: '6px 14px',
                                 borderRadius: 'var(--radius-md)',
@@ -174,6 +187,7 @@ export default function DashboardPage() {
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
+                                whiteSpace: 'nowrap',
                             }}
                         >
                             {t_tab.label}
@@ -255,6 +269,13 @@ export default function DashboardPage() {
                                                 style={{ background: 'rgba(168,85,247,0.8)', border: 'none', padding: '0.75rem 2rem' }}
                                             >
                                                 {t('dashboard.actions.ngo_search.label')}
+                                            </button>
+                                            <button
+                                                className="btn btn-ghost"
+                                                onClick={() => setShowDemo(true)}
+                                                style={{ border: '1px solid var(--border-subtle)', padding: '0.75rem 2rem' }}
+                                            >
+                                                📺 Watch Demo
                                             </button>
                                         </>
                                     ) : (
@@ -464,6 +485,13 @@ export default function DashboardPage() {
                 {activeTab === 'donations' && <DonationTab user={user} />}
             </main>
             {user?.role === 'citizen' && <SOSButton />}
+
+            {showDemo && (
+                <ExtremeSOSFlow
+                    onComplete={() => setShowDemo(false)}
+                    onCancel={() => setShowDemo(false)}
+                />
+            )}
         </div >
     );
 }

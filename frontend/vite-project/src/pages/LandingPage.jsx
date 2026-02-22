@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/LanguageSelector.jsx';
+import ExtremeSOSFlow from '../components/ExtremeSOSFlow.jsx';
 import { publicApi } from '../services/api.js';
 import './Landing.css';
 
@@ -14,6 +15,7 @@ export default function LandingPage() {
         volunteersOnline: 0,
         totalRescues: 0
     });
+    const [showDemo, setShowDemo] = useState(false);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -166,15 +168,24 @@ export default function LandingPage() {
                             {t('nav.signin')}
                         </Link>
                     </div>
-                    <Link
-                        to="/signup?role=citizen"
-                        className="btn btn-danger btn-xl"
-                        style={{ marginTop: 'var(--space-4)', width: '100%', maxWidth: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}
-                    >
-                        <span>🆘</span>
-                        <span>{t('hero.emergency_demo')}</span>
-                    </Link>
+                    <div style={{ display: 'flex', gap: 'var(--space-4)', marginTop: 'var(--space-6)', width: '100%', maxWidth: '400px' }}>
+                        <button
+                            onClick={() => setShowDemo(true)}
+                            className="btn btn-danger btn-xl"
+                            style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', boxShadow: '0 0 20px rgba(230,57,70,0.3)' }}
+                        >
+                            <span style={{ fontSize: '1.2rem' }}>🆘</span>
+                            <span>LIVE SOS DEMO</span>
+                        </button>
+                    </div>
                 </div>
+
+                {showDemo && (
+                    <ExtremeSOSFlow
+                        onComplete={() => setShowDemo(false)}
+                        onCancel={() => setShowDemo(false)}
+                    />
+                )}
             </section>
 
             {/* ---- Platform Stats Section ---- */}

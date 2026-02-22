@@ -10,12 +10,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 var(--space-6);
+    padding: 0 var(--space-4);
     height: 60px;
     background: var(--glass-bg);
     border-bottom: 1px solid var(--border-subtle);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+}
+
+@media (min-width: 768px) {
+    .app-topbar {
+        padding: 0 var(--space-6);
+    }
 }
 
 .app-brand {
@@ -174,10 +180,16 @@
 /* ---- Main content ---- */
 .dash-main {
     flex: 1;
-    padding: var(--space-8) var(--space-8);
+    padding: var(--space-4) var(--space-4);
     overflow-y: auto;
     max-width: 1100px;
     width: 100%;
+}
+
+@media (min-width: 768px) {
+    .dash-main {
+        padding: var(--space-8) var(--space-8);
+    }
 }
 
 .dash-content-area {
@@ -206,20 +218,38 @@
 /* ---- Stats grid ---- */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-4);
     margin-bottom: var(--space-8);
 }
 
+@media (min-width: 480px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
 /* ---- Hero section ---- */
 .dash-hero {
-    padding: var(--space-8) var(--space-8);
+    padding: var(--space-6) var(--space-6);
     background: linear-gradient(135deg, rgba(230, 57, 70, 0.07) 0%, rgba(193, 18, 31, 0.03) 50%, transparent 100%);
     border: 1px solid rgba(230, 57, 70, 0.12);
     border-radius: var(--radius-xl);
     margin-bottom: var(--space-8);
     position: relative;
     overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .dash-hero {
+        padding: var(--space-8) var(--space-8);
+    }
 }
 
 .dash-hero::before {
@@ -302,8 +332,20 @@
 /* ---- Action cards (for dashboard quick actions) ---- */
 .action-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .action-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .action-cards {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
 }
 
 .action-card {
@@ -691,8 +733,9 @@
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow-x: auto;
     backdrop-filter: blur(12px);
+    -webkit-overflow-scrolling: touch;
 }
 
 .admin-table {
@@ -829,8 +872,15 @@
 /* ---- Campaigns Grid ---- */
 .campaigns-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: var(--space-5);
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .campaigns-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--space-5);
+    }
 }
 
 .campaign-card {
@@ -1068,7 +1118,7 @@
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
-    padding: 1.5rem 1.5rem 1.5rem 2.25rem;
+    padding: 1.25rem 1rem 1.25rem 1.75rem;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -1077,6 +1127,12 @@
     box-shadow: var(--shadow-sm);
     transition: transform 0.2s, box-shadow 0.2s;
     margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .sos-horizontal-card {
+        padding: 1.5rem 1.5rem 1.5rem 2.25rem;
+    }
 }
 
 .sos-horizontal-card:hover {
@@ -1131,10 +1187,19 @@
 
 .sos-info-row {
     display: flex;
-    gap: 1.5rem;
-    font-size: 0.9375rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+@media (min-width: 640px) {
+    .sos-info-row {
+        flex-direction: row;
+        gap: 1.5rem;
+        font-size: 0.9375rem;
+    }
 }
 
 .sos-info-row strong {
