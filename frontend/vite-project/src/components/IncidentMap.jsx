@@ -82,7 +82,7 @@ export default function IncidentMap({ incidents = [] }) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                <ChangeView markers={incidents} />
+                <MapController markers={incidents} focusLocation={focusLocation} />
 
                 {incidents
                     .filter(inc => inc.latitude && inc.longitude)
@@ -93,7 +93,7 @@ export default function IncidentMap({ incidents = [] }) {
                                 parseFloat(incident.latitude),
                                 parseFloat(incident.longitude)
                             ]}
-                            icon={createCustomIcon(incident.priority)}
+                            icon={getIcon(incident)}
                         >
                             <Popup>
                                 <div className="map-popup-content" style={{ padding: '8px', minWidth: '240px' }}>

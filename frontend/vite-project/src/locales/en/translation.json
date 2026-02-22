@@ -369,7 +369,8 @@
             "live": "📡 LIVE: Help is on the way!",
             "track": "🗺️ TRACK RESPONDER LOCATION",
             "waiting_location": "⏳ Responder assigned. Waiting for location signal...",
-            "unknown_loc": "Reported Location",
+            "location_label": "Location",
+            "unknown_loc": "Address Fetching...",
             "away": "away",
             "reporter": "Reporter"
         },

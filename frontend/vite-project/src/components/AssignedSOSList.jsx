@@ -3,7 +3,7 @@ import { sosApi } from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-export default function AssignedSOSList({ sosList = [], loading = false, refresh }) {
+export default function AssignedSOSList({ sosList = [], loading = false, refresh, onViewOnMap }) {
     const { t } = useTranslation();
 
     // Internal state only for tracking and watch IDs
@@ -134,7 +134,7 @@ export default function AssignedSOSList({ sosList = [], loading = false, refresh
                         </div>
 
                         <div className="sos-info-row">
-                            <div><strong>📍 {t('dashboard.sos_card.unknown_loc')}:</strong> {sos.address || 'Reported Location'}</div>
+                            <div><strong>📍 {t('dashboard.sos_card.location_label') || 'Location'}:</strong> {sos.address || t('dashboard.sos_card.unknown_loc')}</div>
                             <div><strong>👤 {t('dashboard.sos_card.reporter')}:</strong> {sos.user?.name || 'User'}</div>
                             {sos.contact_phone && (
                                 <div><strong>📞 {t('dashboard.sos_card.contact')}:</strong> {sos.contact_phone}</div>
@@ -146,6 +146,13 @@ export default function AssignedSOSList({ sosList = [], loading = false, refresh
                         )}
 
                         <div className="sos-card-actions">
+                            <button
+                                className="btn btn-ghost btn-sm"
+                                onClick={() => onViewOnMap?.(sos)}
+                                style={{ border: '1px solid var(--border-subtle)', background: 'rgba(255,255,255,0.05)' }}
+                            >
+                                🗺️ {t('dashboard.assigned.btn.view_on_map') || 'View on Map'}
+                            </button>
                             {trackingIds.has(sos.id) ? (
                                 <button className="btn btn-warning btn-sm" onClick={() => stopTracking(sos.id)}>
                                     {t('dashboard.assigned.btn.stop_tracking')}

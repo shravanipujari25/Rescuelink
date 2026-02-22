@@ -72,7 +72,7 @@ export default function ResolvedSOSList() {
                         </div>
 
                         <div className="sos-info-row">
-                            <div><strong>📍 {t('dashboard.sos_card.unknown_loc') || 'Location'}:</strong> {sos.address || 'Reported Location'}</div>
+                            <div><strong>📍 {t('dashboard.sos_card.location_label') || 'Location'}:</strong> {sos.address || t('dashboard.sos_card.unknown_loc')}</div>
                             <div><strong>👤 {t('dashboard.sos_card.reporter') || 'Contact'}:</strong> {sos.user?.name || 'Citizen'}</div>
                         </div>
 

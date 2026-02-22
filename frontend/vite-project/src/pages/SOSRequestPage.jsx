@@ -9,6 +9,7 @@ export default function SOSRequestPage() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [location, setLocation] = useState(null);
+    const [address, setAddress] = useState(null);
     const { t } = useTranslation();
 
     const [formData, setFormData] = useState({
@@ -34,11 +35,25 @@ export default function SOSRequestPage() {
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    setLocation({
-                        latitude: pos.coords.latitude,
-                        longitude: pos.coords.longitude
-                    });
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+
+                    setLocation({ latitude: lat, longitude: lng });
+
+                    // Reverse Geocoding via Nominatim (OSM)
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`, {
+                            headers: { 'Accept-Language': 'en' }
+                        });
+                        const data = await response.json();
+                        if (data && data.display_name) {
+                            setAddress(data.display_name);
+                            console.log("Resolved Address:", data.display_name);
+                        }
+                    } catch (err) {
+                        console.error("Address resolution failed:", err);
+                    }
                 },
                 (err) => {
                     console.error(err);
@@ -84,6 +99,7 @@ export default function SOSRequestPage() {
                 severity: 'high',
                 latitude: location.latitude,
                 longitude: location.longitude,
+                address: address, // Send the human-readable address
             });
 
             toast.success(t('sos.messages.success'));

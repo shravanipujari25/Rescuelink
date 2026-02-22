@@ -19,6 +19,15 @@ export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState('overview');
     const [activeSOS, setActiveSOS] = useState([]);
     const [showDemo, setShowDemo] = useState(false);
+    const [focusLocation, setFocusLocation] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+
+    const handleViewOnMap = (sos) => {
+        setSelectedId(sos.id);
+        setFocusLocation({ lat: parseFloat(sos.latitude), lng: parseFloat(sos.longitude) });
+        // Smooth scroll to map if on mobile or if map is far
+        document.querySelector('.map-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
 
     const ROLE_META = {
         citizen: {
@@ -300,7 +309,7 @@ export default function DashboardPage() {
                                 <h3 className="section-title">📍 {t('dashboard.actions.map.label')}</h3>
                                 <span className="badge badge-active">{t('dashboard.hero.live_updates')}</span>
                             </div>
-                            <IncidentMap incidents={activeSOS} />
+                            <IncidentMap incidents={activeSOS} focusLocation={focusLocation} selectedId={selectedId} />
                         </div>
 
                         {user?.role === 'citizen' && activeSOS.length > 0 && (
@@ -382,7 +391,7 @@ export default function DashboardPage() {
                                     <div className="section-header">
                                         <h3 className="section-title">🚨 {t('dashboard.tabs.assigned')}</h3>
                                     </div>
-                                    <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} />
+                                    <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} onViewOnMap={handleViewOnMap} />
                                 </div>
 
 
@@ -464,11 +473,10 @@ export default function DashboardPage() {
 
                 {activeTab === 'assigned' && user?.role !== 'citizen' && (
                     <div className="animate-fadeIn">
-                        <div className="page-header">
-                            <h1>{t('dashboard.assigned.title')}</h1>
-                            <p>{t('dashboard.assigned.desc')}</p>
+                        <div className="section animate-fadeIn" style={{ marginBottom: 'var(--space-8)' }}>
+                            <IncidentMap incidents={activeSOS} focusLocation={focusLocation} selectedId={selectedId} />
                         </div>
-                        <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} />
+                        <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} onViewOnMap={handleViewOnMap} />
                     </div>
                 )}
 
