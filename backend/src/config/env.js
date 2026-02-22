@@ -22,8 +22,8 @@ const envSchema = z.object({
     SUPABASE_ANON_KEY: z.string().trim().min(1),
     SUPABASE_SERVICE_ROLE_KEY: z.string().trim().min(1),
 
-    // ✅ ADD GEMINI API KEY HERE
-    GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+    // ✅ GEMINI API KEY (Optional for Node, used in Python Service)
+    GEMINI_API_KEY: z.string().optional(),
 
     SMTP_HOST: z.string().default('smtp.gmail.com'),
     SMTP_PORT: z.coerce.number().default(587),
@@ -43,7 +43,6 @@ if (!parsed.success) {
     console.error('❌ Invalid environment variables:\n', parsed.error.format());
     process.exit(1);
 }
-
 // ✅ Use validated env object
 export const env = parsed.data;
 

@@ -96,45 +96,58 @@ export default function DashboardPage() {
         tabs.splice(tabs.length - 1, 0, { id: 'donations', label: t('dashboard.donations.title') });
     }
 
+    // Safety check: reset activeTab if the role doesn't support the current tab
+    if (activeTab === 'assigned' && user?.role === 'citizen') {
+        setActiveTab('overview');
+    }
+
+    const [loading, setLoading] = useState(true);
+    const [coords, setCoords] = useState(null);
+
     useEffect(() => {
-        // Safety check: reset activeTab if the role doesn't support the current tab
-        if (activeTab === 'assigned' && user?.role === 'citizen') {
-            setActiveTab('overview');
+        // 📍 Start persistent location tracking
+        if (navigator.geolocation && (user?.role === 'volunteer' || user?.role === 'ngo')) {
+            const watchId = navigator.geolocation.watchPosition(
+                (pos) => setCoords({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+                (err) => console.warn('Location watch error:', err),
+                { enableHighAccuracy: false, timeout: 10000, maximumAge: 10000 }
+            );
+            return () => navigator.geolocation.clearWatch(watchId);
         }
+    }, [user?.id, user?.role]);
 
-        const fetchSOS = async () => {
-            try {
-                let res;
-                if (user?.role === 'citizen') {
-                    res = await sosApi.getMyActiveSOS();
-                } else {
-                    // Volunteers, NGOs, and Admins see assigned/nearby SOS
-                    res = await sosApi.getAssigned();
-                }
+    const [initialFetchDone, setInitialFetchDone] = useState(false);
 
-                // The backend returns { status: 'success', data: [...] }
-                if (res.status === 'success' || res.success) {
-                    const data = res.data || [];
-                    setActiveSOS(data);
-                    if (data.length > 0) {
-                        console.log('📡 [Dashboard] Fetched SOS Data:');
-                        console.table(data.map(item => ({
-                            id: item.id.slice(0, 8),
-                            type: item.emergency_type,
-                            priority: item.priority || 'MISSING ❌',
-                            description: item.description?.slice(0, 20)
-                        })));
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to fetch SOS for map', err);
+    const fetchSOS = async () => {
+        // Only show loading spinner on the absolute first load
+        if (!initialFetchDone) setLoading(true);
+        try {
+            let res;
+            if (user?.role === 'citizen') {
+                res = await sosApi.getMyActiveSOS();
+            } else {
+                // Pass current location to get nearby SOS
+                const params = coords ? { lat: coords.latitude, lng: coords.longitude } : {};
+                res = await sosApi.getAssigned(params);
             }
-        };
 
+            if (res.status === 'success' || res.success) {
+                const data = res.data || [];
+                setActiveSOS(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch SOS', err);
+        } finally {
+            setLoading(false);
+            setInitialFetchDone(true);
+        }
+    };
+
+    useEffect(() => {
         fetchSOS();
-        const interval = setInterval(fetchSOS, 10000);
+        const interval = setInterval(fetchSOS, 5000); // 5s heartbeat
         return () => clearInterval(interval);
-    }, [user, activeTab]);
+    }, [user?.id, user?.role, coords]); // Re-fetch if user or coords change
 
     return (
         <div className="dash-page">
@@ -348,7 +361,7 @@ export default function DashboardPage() {
                                     <div className="section-header">
                                         <h3 className="section-title">🚨 {t('dashboard.tabs.assigned')}</h3>
                                     </div>
-                                    <AssignedSOSList />
+                                    <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} />
                                 </div>
 
 
@@ -434,7 +447,7 @@ export default function DashboardPage() {
                             <h1>{t('dashboard.assigned.title')}</h1>
                             <p>{t('dashboard.assigned.desc')}</p>
                         </div>
-                        <AssignedSOSList />
+                        <AssignedSOSList sosList={activeSOS} loading={loading} refresh={fetchSOS} />
                     </div>
                 )}
 

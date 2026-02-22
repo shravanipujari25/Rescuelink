@@ -3,6 +3,7 @@ from typing import List, Optional, Literal
 
 class EmergencyRequest(BaseModel):
     message: str
+    imageBase64: Optional[str] = None
 
 class EmergencyResponse(BaseModel):
     classification: Literal["medical", "flood", "fire", "earthquake", "landslide", "platform", "other"]

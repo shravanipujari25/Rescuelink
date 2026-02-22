@@ -8,7 +8,7 @@ export const sosService = {
     async createSOS(userId, data) {
         logger.info({ userId, data }, 'Creating SOS request');
 
-        let sosData = {
+        const sosData = {
             user_id: userId,
             emergency_type: data.emergency_type,
             severity: data.severity || 'medium',
@@ -21,24 +21,42 @@ export const sosService = {
             status: 'active'
         };
 
-        // 🚨 AI TRIAGE INTEGRATION
+        // 1. Create the SOS record immediately
+        let sos;
         try {
-            const aiResult = await aiTriageService.getTriage(data.description, userId);
-            if (aiResult) {
-                logger.info({ userId, aiResult }, 'Merging AI Triage data');
-                sosData = {
-                    ...sosData,
-                    ...aiResult,
-                    // If AI identifies a high priority, escalate the severity
-                    severity: aiResult.priority === 'critical' ? 'critical' : (aiResult.priority === 'high' ? 'high' : sosData.severity)
-                };
-            }
+            logger.info({ sosData }, 'Inserting SOS into database');
+            sos = await sosRepository.create(sosData);
+            logger.info({ sosId: sos.id }, 'SOS_CREATED_SUCCESSFULLY');
+
+            // 2. Start AI Triage in the background (non-blocking)
+            // ...
+            // We use an immediately-invoked async function to keep it floating
+            (async () => {
+                try {
+                    const aiResult = await aiTriageService.getTriage(data.description, userId, data.imageBase64);
+                    if (aiResult) {
+                        logger.info({ sosId: sos.id, aiResult }, 'Merging AI Triage data in background');
+
+                        const updates = {
+                            ...aiResult,
+                            // Escalate severity if AI identifies critical/high priority
+                            severity: aiResult.priority === 'critical' ? 'critical' :
+                                (aiResult.priority === 'high' ? 'high' : sosData.severity)
+                        };
+
+                        await sosRepository.updateStatus(sos.id, updates);
+                        logger.info({ sosId: sos.id }, 'SOS_ENRICHED_BY_AI');
+                    }
+                } catch (err) {
+                    logger.error({ sosId: sos.id, err }, 'Background AI Triage failed (non-critical)');
+                }
+            })();
+
         } catch (err) {
-            logger.error({ userId, err }, 'AI Triage integration failed (non-blocking)');
+            logger.error({ userId, err }, 'Failed to create SOS request');
+            throw err;
         }
 
-        const sos = await sosRepository.create(sosData);
-        logger.info({ sosId: sos.id }, 'SOS_CREATED');
         return sos;
     },
 

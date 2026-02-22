@@ -276,7 +276,8 @@
                 "type": "What is the emergency?",
                 "people": "2. People at Risk",
                 "contact": "3. Additional Contact (Optional)",
-                "desc": "4. Situation Description (Optional)"
+                "desc": "4. Situation Description (Optional)",
+                "photo": "5. Add Emergency Photo (Optional)"
             },
             "placeholders": {
                 "contact": "Backup phone number",
@@ -305,7 +306,8 @@
             "select_type": "Please select an emergency type",
             "success": "SOS Alert Broadcasted! Help is on the way.",
             "failed": "Failed to send SOS",
-            "location_error": "Location access is required for SOS"
+            "location_error": "Location access is required for SOS",
+            "image_too_large": "Image is too large. Please keep it under 3MB."
         }
     },
     "dashboard": {
@@ -366,7 +368,10 @@
             "searching": "🔍 Searching for nearby responders...",
             "live": "📡 LIVE: Help is on the way!",
             "track": "🗺️ TRACK RESPONDER LOCATION",
-            "waiting_location": "⏳ Responder assigned. Waiting for location signal..."
+            "waiting_location": "⏳ Responder assigned. Waiting for location signal...",
+            "unknown_loc": "Reported Location",
+            "away": "away",
+            "reporter": "Reporter"
         },
         "actions": {
             "report": {
@@ -469,6 +474,11 @@
             "people_label": "People Count",
             "desc_label": "Description",
             "view_map": "View on Map ↗",
+            "btn": {
+                "start_tracking": "Start Tracking",
+                "stop_tracking": "Stop Tracking",
+                "resolve": "Resolve"
+            },
             "toast": {
                 "load_fail": "Failed to load assigned SOS requests",
                 "resolve_confirm": "Are you sure you want to mark this emergency as resolved?",

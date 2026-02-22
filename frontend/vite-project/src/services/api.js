@@ -1,6 +1,5 @@
-// In development: use relative /api so Vite's proxy forwards to localhost:5000 (no CORS)
-// In production:  set VITE_API_URL to your deployed backend URL
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// In development: use direct URL to bypass proxy limits if needed, or relative /api
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
 
 /**
  * api — thin fetch wrapper that:

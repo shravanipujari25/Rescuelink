@@ -15,6 +15,10 @@ export const errorMiddleware = (err, req, res, next) => {
         {
             err: {
                 message: err.message,
+                name: err.name,
+                type: err.type,
+                limit: err.limit,
+                received: err.received,
                 stack: err.stack,
                 statusCode,
             },
@@ -23,9 +27,10 @@ export const errorMiddleware = (err, req, res, next) => {
                 url: req.originalUrl,
                 ip: req.ip,
                 requestId: req.id,
+                headers: req.headers
             },
         },
-        'Unhandled error'
+        'Unhandled error 🚨'
     );
 
     // Don't leak stack traces in production

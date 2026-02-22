@@ -96,30 +96,53 @@ export default function IncidentMap({ incidents = [] }) {
                             icon={createCustomIcon(incident.priority)}
                         >
                             <Popup>
-                                <div className="map-popup-content" style={{ padding: '8px', minWidth: '200px' }}>
+                                <div className="map-popup-content" style={{ padding: '8px', minWidth: '240px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                                        <span className={`badge badge-${incident.priority || 'blue'}`} style={{ textTransform: 'uppercase', fontSize: '10px' }}>
+                                        <span className={`badge badge-${incident.priority || 'blue'}`} style={{
+                                            textTransform: 'uppercase',
+                                            fontSize: '10px',
+                                            fontWeight: 800,
+                                            padding: '2px 8px',
+                                            borderRadius: '4px',
+                                            backgroundColor: incident.priority === 'critical' ? '#dc2626' : (incident.priority === 'high' ? '#ef4444' : '#f97316'),
+                                            color: 'white'
+                                        }}>
                                             {incident.priority || 'Normal'}
                                         </span>
-                                        <h4 style={{ margin: 0, textTransform: 'capitalize' }}>{t(`sos.types.${incident.emergency_type}`)}</h4>
+                                        <h4 style={{ margin: 0, textTransform: 'capitalize', fontSize: '1rem' }}>{t(`sos.types.${incident.emergency_type}`)}</h4>
                                     </div>
-                                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 12px 0' }}>
+
+                                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 12px 0', lineHeight: '1.4' }}>
                                         {incident.description}
                                     </p>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px' }}>
-                                        <div style={{ color: 'var(--text-muted)' }}>{t('dashboard.stats.role')}: {incident.people_count || 1}</div>
-                                        <div style={{ color: 'var(--text-muted)' }}>Status: {incident.status}</div>
+
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '6px' }}>
+                                        <div><span style={{ color: 'var(--text-muted)' }}>Severity:</span> {incident.severity_score}/10</div>
+                                        <div><span style={{ color: 'var(--text-muted)' }}>People:</span> {incident.people_count || 1}</div>
+                                        {incident.ai_source === 'gemini' && incident.ai_confidence && (
+                                            <div style={{ gridColumn: 'span 2', marginTop: '4px', color: '#818cf8', fontWeight: 600 }}>
+                                                🧠 AI Confidence: {Math.round(incident.ai_confidence * 100)}%
+                                            </div>
+                                        )}
                                     </div>
-                                    {incident.injured && (
-                                        <div style={{ marginTop: '8px', color: '#ef4444', fontWeight: 600, fontSize: '12px' }}>
-                                            ⚠️ {t('sos.alerts.injured')}
-                                        </div>
-                                    )}
-                                    {incident.trapped && (
-                                        <div style={{ marginTop: '4px', color: '#f59e0b', fontWeight: 600, fontSize: '12px' }}>
-                                            🚧 {t('sos.alerts.trapped')}
-                                        </div>
-                                    )}
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '10px' }}>
+                                        {incident.injured && (
+                                            <span style={{ color: '#ef4444', fontWeight: 600, fontSize: '11px', background: 'rgba(239, 68, 68, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                                                ⚠️ {t('sos.alerts.injured') || 'Injured'}
+                                            </span>
+                                        )}
+                                        {incident.trapped && (
+                                            <span style={{ color: '#f59e0b', fontWeight: 600, fontSize: '11px', background: 'rgba(245, 158, 11, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                                                🚧 {t('sos.alerts.trapped') || 'Trapped'}
+                                            </span>
+                                        )}
+                                        {incident.ai_source === 'gemini' && (
+                                            <span style={{ color: '#818cf8', fontWeight: 600, fontSize: '11px', background: 'rgba(129, 140, 248, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                                                📸 Vision Assisted
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </Popup>
                         </Marker>

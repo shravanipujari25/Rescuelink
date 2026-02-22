@@ -11,24 +11,24 @@ export const aiTriageService = {
      * @param {string} requestId - Request ID for logging
      * @returns {Promise<Object|null>} - AI analysis or null if failed
      */
-    async getTriage(message, requestId) {
+    async getTriage(message, requestId, imageBase64 = null) {
         if (!message) return null;
 
         const AI_BACKEND_URL = process.env.AI_BACKEND_URL || 'http://localhost:8000';
 
         try {
-            logger.info({ requestId, message }, 'Calling AI Triage service');
+            logger.info({ requestId, message: message.slice(0, 50) + '...', hasImage: !!imageBase64 }, 'Calling AI Triage service');
 
             // Set a timeout using AbortController (Node 18+)
             const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 5000);
+            const timeout = setTimeout(() => controller.abort(), 10000); // Increased timeout for Vision
 
             const response = await fetch(`${AI_BACKEND_URL}/api/ai/triage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify({ message, imageBase64: imageBase64 || null }),
                 signal: controller.signal
             });
 

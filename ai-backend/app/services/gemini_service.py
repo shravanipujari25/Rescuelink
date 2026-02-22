@@ -1,6 +1,7 @@
 import google.generativeai as genai
 import os
 import json
+import base64
 from app.models import EmergencyResponse
 
 # Configure Gemini
@@ -8,67 +9,79 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
-model = genai.GenerativeModel('gemini-pro')
+# Using gemini-1.5-flash for multimodal capabilities (free tier)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-def get_gemini_response(message: str) -> EmergencyResponse:
+def get_gemini_response(message: str, imageBase64: str = None) -> EmergencyResponse:
     prompt_template = """
-    You are the RescueLink Smart Assistant, an AI expert in disaster management and the RescueLink platform.
+    You are the RescueLink Smart Assistant, an AI expert in disaster management.
+    Analyze the following emergency request. {vision_extra}
     
     CRITICAL GOALS:
-    1. DETECT EMOTION: Identify if the user is panicked, scared, angry, or calm.
-    2. DETECT URGENCY: Score the urgency from 1-10.
-    3. PROVIDE GUIDANCE: For emergencies, give 3-5 clear, life-saving steps.
-    4. PLATFORM KNOWLEDGE: Answer questions about SOS, volunteering, NGOs, and donations based on these facts:
-       - SOS: Shares live location with verified Volunteers/NGOs.
-       - Volunteers/NGOs: Must be verified by Admin before they can see SOS requests.
-       - Privacy: Location is ONLY shared during an active SOS and is deleted when resolved.
-       - Roles: Citizen (reports), Volunteer (rescues), NGO (coordinates/donates), Admin (manages).
+    1. CLASSIFY: medical, flood, fire, earthquake, landslide, platform, or other.
+    2. SEVERITY: low, medium, or high.
+    3. SENTIMENT: panicked, scared, anxious, calm, or curious.
+    4. URGENCY: Score from 1-10.
+    5. GUIDANCE: Provide 3-5 life-saving steps.
     
-    User Input: "{message}"
+    User Message: "{message}"
     
-    Return response STRICTLY in JSON format:
+    Return ONLY strict JSON:
     {{
-      "classification": "medical | flood | fire | earthquake | landslide | platform | other",
-      "severity_level": "low | medium | high",
-      "sentiment": "panicked | scared | anxious | calm | curious",
+      "classification": "...",
+      "severity_level": "...",
+      "sentiment": "...",
       "urgency_score": 1,
-      "guidance": [
-         "Step 1...",
-         "Step 2..."
-      ],
+      "guidance": ["Step 1", "Step 2"],
       "recommend_sos": true/false,
-      "explanation": "Brief explanation of your assessment"
+      "explanation": "..."
     }}
     """
     
-    prompt = prompt_template.format(message=message)
+    vision_extra = "If an image is provided, use it to assess the severity, disaster type, and any visible risks." if imageBase64 else ""
+    prompt = prompt_template.format(message=message, vision_extra=vision_extra)
     
     try:
-        response = model.generate_content(prompt)
+        content = [prompt]
+        
+        if imageBase64:
+            # Handle data URL if present
+            if "," in imageBase64:
+                imageBase64 = imageBase64.split(",")[1]
+            
+            image_bytes = base64.b64decode(imageBase64)
+            content.append({
+                "mime_type": "image/jpeg",
+                "data": image_bytes
+            })
+            print("📸 Vision Assisted Analysis running...")
+
+        response = model.generate_content(content)
         response_text = response.text
         
-        # Parse JSON from response
-        # Sometimes Gemini wraps JSON in markdown code blocks, remove them
+        # Robust JSON extraction from markdown or raw text
         if "```json" in response_text:
-            response_text = response_text.replace("```json", "").replace("```", "")
-        
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+        else:
+            # Final safety: strip anything that might be wrapping the JSON
+            response_text = response_text.replace("```json", "").replace("```", "").strip()
+            
         data = json.loads(response_text)
-        
-        # Validation
         return EmergencyResponse(**data)
         
     except Exception as e:
         print(f"Error calling Gemini: {e}")
-        # Fallback response if Gemini fails
         return EmergencyResponse(
             classification="other",
             severity_level="medium", 
             sentiment="calm",
             urgency_score=5,
             guidance=[
-                "I might not have the exact answer, but if you're in danger or need help right now, please send an SOS request from the dashboard so responders in your area can see your location."
+                "If you are in danger, please move to a safe location immediately and wait for rescuers."
             ],
             recommend_sos=False,
-            explanation="Service momentarily unavailable."
+            explanation="AI analysis failed or timed out."
         )
 

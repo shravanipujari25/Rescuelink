@@ -22,94 +22,62 @@ export default function ResolvedSOSList() {
         fetchResolved();
     }, []);
 
-    if (loading) return <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>{t('common.loading') || 'Loading history...'}</div>;
+    if (loading) return <div className="admin-loading">{t('dashboard.assigned.loading')}</div>;
 
     if (resolvedList.length === 0) {
         return (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-subtle)' }}>
-                <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>📜</span>
-                {t('dashboard.resolved.none') || 'No resolved issues found yet.'}
+            <div className="no-data-card" style={{ padding: '3rem', textAlign: 'center', opacity: 0.7 }}>
+                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '1rem' }}>📜</span>
+                <p>{t('dashboard.resolved.none')}</p>
             </div>
         );
     }
 
-    return (
-        <div style={{ display: 'grid', gap: '1rem' }}>
-            {resolvedList.map(sos => {
-                // Priority colors to match the map
-                const priorityColors = {
-                    critical: '#dc2626', // Red
-                    high: '#ef4444',     // Light Red
-                    medium: '#f97316',   // Orange
-                    low: '#eab308'       // Yellow
-                };
-                const priorityColor = priorityColors[sos.priority] || '#3b82f6'; // Blue fallback
+    const priorityColors = {
+        critical: '#dc2626',
+        high: '#ef4444',
+        medium: '#f97316',
+        low: '#eab308'
+    };
 
+    return (
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+            {resolvedList.map(sos => {
+                const color = priorityColors[sos.priority] || '#3b82f6';
                 return (
-                    <div key={sos.id} style={{
-                        background: 'var(--bg-surface)',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: 'var(--radius-lg)',
-                        padding: '1.25rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '0.75rem',
-                        opacity: 0.85,
-                        position: 'relative',
-                        paddingLeft: '2rem', // Space for side bar
-                        overflow: 'hidden'
-                    }}>
-                        {/* Priority Side Bar */}
-                        <div style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: '4px',
-                            backgroundColor: priorityColor,
-                            opacity: 0.6
-                        }} />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div key={sos.id} className="sos-horizontal-card" style={{ opacity: 0.9 }}>
+                        <div className="sos-card-accent" style={{ backgroundColor: color }} />
+
+                        <div className="sos-card-top">
                             <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                    <span className="badge badge-active" style={{ background: 'var(--success)', color: 'white' }}>
+                                <div className="sos-badges-wrap">
+                                    <span className="badge badge-active" style={{ background: '#10b981', color: 'white', border: 'none' }}>
                                         {t('dashboard.resolved.status') || 'RESOLVED'}
                                     </span>
                                     {sos.priority && (
-                                        <span style={{
-                                            fontSize: '0.65rem',
-                                            fontWeight: 800,
-                                            color: priorityColor,
-                                            textTransform: 'uppercase',
-                                            background: `${priorityColor}15`,
-                                            padding: '2px 6px',
-                                            borderRadius: '4px',
-                                            border: `1px solid ${priorityColor}33`
-                                        }}>
-                                            {sos.priority}
+                                        <span className="badge" style={{ background: `${color}15`, color: color, border: `1px solid ${color}33` }}>
+                                            {sos.priority?.toUpperCase()}
                                         </span>
                                     )}
-                                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                        {new Date(sos.resolved_at).toLocaleString()}
+                                    <span className="sos-card-time">
+                                        {new Date(sos.resolved_at || sos.created_at).toLocaleString()}
                                     </span>
                                 </div>
-                                <h4 style={{ margin: '0.5rem 0 0', fontSize: '1.1rem' }}>{t(`sos.types.${sos.emergency_type}`)}</h4>
+                                <h4 className="sos-title">{t(`sos.types.${sos.emergency_type}`)}</h4>
                             </div>
-                            <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                            <div className="sos-card-responder">
                                 <strong>{t('dashboard.resolved.by') || 'Resolved by'}:</strong><br />
-                                {sos.assigned_user?.name || 'Unit'}
+                                {sos.assigned_user?.name || 'Volunteer Unit'}
                             </div>
                         </div>
 
-                        <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', display: 'flex', gap: '1rem' }}>
-                            <div><strong>📍 {t('dashboard.assigned.location_label')}:</strong> {sos.address || 'Reported Location'}</div>
-                            <div><strong>👤 {t('dashboard.assigned.contact_label')}:</strong> {sos.user?.name}</div>
+                        <div className="sos-info-row">
+                            <div><strong>📍 {t('dashboard.sos_card.unknown_loc') || 'Location'}:</strong> {sos.address || 'Reported Location'}</div>
+                            <div><strong>👤 {t('dashboard.sos_card.reporter') || 'Contact'}:</strong> {sos.user?.name || 'Citizen'}</div>
                         </div>
 
                         {sos.description && (
-                            <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-secondary)', fontStyle: 'italic', borderLeft: '3px solid var(--border-subtle)', paddingLeft: '10px' }}>
-                                "{sos.description}"
-                            </p>
+                            <p className="sos-quote">"{sos.description}"</p>
                         )}
                     </div>
                 );

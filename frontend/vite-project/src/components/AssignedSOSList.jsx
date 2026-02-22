@@ -3,37 +3,12 @@ import { sosApi } from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-export default function AssignedSOSList() {
+export default function AssignedSOSList({ sosList = [], loading = false, refresh }) {
     const { t } = useTranslation();
-    const [sosList, setSosList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [trackingIds, setTrackingIds] = useState(new Set()); // IDs of SOS being tracked
-    const [watchIds, setWatchIds] = useState({}); // Map of sosId -> watchPosition ID
 
-    const fetchAssignedSOS = async () => {
-        try {
-            let params = {};
-            if (navigator.geolocation) {
-                // We try a fast-timeout check for location to filter nearby
-                const pos = await new Promise((resolve) => {
-                    navigator.geolocation.getCurrentPosition(resolve, () => resolve(null), {
-                        enableHighAccuracy: false,
-                        timeout: 5000
-                    });
-                });
-                if (pos) {
-                    params = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                }
-            }
-            const res = await sosApi.getAssigned(params);
-            setSosList(res.data || []);
-        } catch (err) {
-            console.error(err);
-            toast.error(t('dashboard.assigned.toast.load_fail'));
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Internal state only for tracking and watch IDs
+    const [trackingIds, setTrackingIds] = useState(new Set());
+    const [watchIds, setWatchIds] = useState({});
 
     const handleResolve = async (id) => {
         if (!confirm(t('dashboard.assigned.toast.resolve_confirm'))) return;
@@ -41,8 +16,8 @@ export default function AssignedSOSList() {
         try {
             await sosApi.resolve(id);
             toast.success(t('dashboard.assigned.toast.resolved'));
-            stopTracking(id); // Stop tracking if resolved
-            fetchAssignedSOS(); // Refresh list
+            stopTracking(id);
+            if (refresh) refresh();
         } catch (err) {
             console.error(err);
             toast.error(err.message || t('dashboard.assigned.toast.resolve_fail'));
@@ -63,7 +38,6 @@ export default function AssignedSOSList() {
                 const { latitude, longitude } = pos.coords;
                 try {
                     await sosApi.updateResponderLocation(sosId, { latitude, longitude });
-                    console.log(`Updated location for SOS ${sosId}: ${latitude}, ${longitude}`);
                 } catch (err) {
                     console.error('Failed to update location', err);
                     toast.error(t('dashboard.assigned.toast.share_err'));
@@ -72,18 +46,13 @@ export default function AssignedSOSList() {
             (err) => {
                 console.error('Geolocation error:', err);
                 toast.error(t('dashboard.assigned.toast.geo_err', { message: err.message }));
-                // Remove from tracking set if we failed immediately
                 setTrackingIds(prev => {
                     const next = new Set(prev);
                     next.delete(sosId);
                     return next;
                 });
             },
-            {
-                enableHighAccuracy: false,
-                timeout: 30000,
-                maximumAge: 10000
-            }
+            { enableHighAccuracy: false, timeout: 30000, maximumAge: 10000 }
         );
 
         setWatchIds(prev => ({ ...prev, [sosId]: id }));
@@ -105,158 +74,91 @@ export default function AssignedSOSList() {
     };
 
     useEffect(() => {
-        fetchAssignedSOS();
-        const interval = setInterval(fetchAssignedSOS, 15000);
         return () => {
-            clearInterval(interval);
-            // Cleanup watches
             Object.values(watchIds).forEach(id => navigator.geolocation.clearWatch(id));
         };
-    }, []);
+    }, [watchIds]);
 
-    if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>{t('dashboard.assigned.loading')}</div>;
+    if (loading && !sosList.length) {
+        return <div className="loading-spinner">{t('dashboard.assigned.loading')}</div>;
+    }
 
-    if (sosList.length === 0) {
+    if (!loading && !sosList.length) {
         return (
-            <div className="dash-notice info">
-                <span className="dash-notice-icon">✅</span>
-                <div>
-                    <strong>{t('dashboard.assigned.none')}</strong>
-                    <p>{t('dashboard.assigned.none_desc')}</p>
-                </div>
+            <div className="no-data-card">
+                <span className="no-data-icon">📜</span>
+                <p>{t('dashboard.assigned.none')}</p>
             </div>
         );
     }
 
+    const priorityColors = {
+        critical: '#dc2626',
+        high: '#ef4444',
+        medium: '#f97316',
+        low: '#eab308'
+    };
+
     return (
-        <div className="sos-list" style={{ display: 'grid', gap: '1rem' }}>
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
             {sosList.map(sos => {
-                const isTracking = trackingIds.has(sos.id);
-
-                // Priority colors to match the map
-                const priorityColors = {
-                    critical: '#dc2626', // Red
-                    high: '#ef4444',     // Light Red
-                    medium: '#f97316',   // Orange
-                    low: '#eab308'       // Yellow
-                };
-                const priorityColor = priorityColors[sos.priority] || '#3b82f6'; // Blue fallback
+                const color = priorityColors[sos.priority] || '#3b82f6';
                 return (
-                    <div key={sos.id} className="sos-card" style={{
-                        background: 'var(--glass-bg)',
-                        border: '1px solid var(--glass-border)',
-                        borderRadius: 'var(--radius-lg)',
-                        padding: '1.5rem',
-                        marginBottom: '1rem',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        paddingLeft: '2.5rem' // Make space for the side bar
-                    }}>
-                        {/* Priority Side Bar */}
-                        <div style={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: '6px',
-                            backgroundColor: priorityColor,
-                            boxShadow: `2px 0 10px ${priorityColor}44`
-                        }} />
-                        {isTracking && (
-                            <div style={{
-                                position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
-                                background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                                animation: 'loading 1.5s infinite'
-                            }} />
-                        )}
+                    <div key={sos.id} className="sos-horizontal-card">
+                        <div className="sos-card-accent" style={{ backgroundColor: color }} />
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                        <div className="sos-card-top">
                             <div>
-                                <span
-                                    className="badge"
-                                    style={{
-                                        textTransform: 'uppercase',
-                                        marginBottom: '0.5rem',
-                                        display: 'inline-block',
-                                        background: `${priorityColor}22`,
-                                        color: priorityColor,
-                                        border: `1px solid ${priorityColor}44`,
-                                        fontWeight: 800,
-                                        fontSize: '0.7rem',
-                                        letterSpacing: '0.05em'
-                                    }}
-                                >
-                                    {sos.priority ? `${sos.priority} priority` : t('dashboard.assigned.severity', { severity: sos.severity })}
-                                </span>
-                                <h3 style={{ margin: 0, fontSize: '1.25rem' }}>{t(`sos.types.${sos.emergency_type}`)}</h3>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: '0.25rem 0 0' }}>
-                                    {t('dashboard.sos_card.reported', { time: new Date(sos.created_at).toLocaleString() })}
-                                </p>
+                                <div className="sos-badges-wrap">
+                                    <span className="badge badge-active" style={{ background: color, color: 'white', border: 'none' }}>
+                                        {sos.status?.toUpperCase()}
+                                    </span>
+                                    {sos.priority && (
+                                        <span className="badge" style={{ background: `${color}15`, color: color, border: `1px solid ${color}33` }}>
+                                            {sos.priority?.toUpperCase()}
+                                        </span>
+                                    )}
+                                    <span className="sos-card-time">
+                                        {new Date(sos.created_at).toLocaleString()}
+                                    </span>
+                                </div>
+                                <h4 className="sos-title">{t(`sos.types.${sos.emergency_type}`)}</h4>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
-                                {isTracking ? (
-                                    <button
-                                        className="btn btn-sm"
-                                        style={{ background: '#22c55e', color: 'white', border: 'none' }}
-                                        onClick={() => stopTracking(sos.id)}
-                                    >
-                                        {t('dashboard.assigned.sharing')}
-                                    </button>
-                                ) : (
-                                    <button
-                                        className="btn btn-primary btn-sm"
-                                        style={{ background: 'var(--brand-primary)' }}
-                                        onClick={() => startTracking(sos.id)}
-                                    >
-                                        {t('dashboard.assigned.start')}
-                                    </button>
+                            <div className="sos-card-responder">
+                                {sos.distance_km !== undefined && (
+                                    <div style={{ marginBottom: '4px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                                        📏 {sos.distance_km.toFixed(2)} km {t('dashboard.sos_card.away')}
+                                    </div>
                                 )}
-
-                                <button
-                                    className="btn btn-ghost btn-sm"
-                                    onClick={() => handleResolve(sos.id)}
-                                    style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}
-                                >
-                                    {t('dashboard.assigned.resolve')}
-                                </button>
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.9rem' }}>
-                            <div>
-                                <strong style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{t('dashboard.assigned.location_label')}</strong>
-                                {sos.address || `${sos.latitude}, ${sos.longitude}`}
-                                <br />
-                                <a
-                                    href={`https://www.google.com/maps?q=${sos.latitude},${sos.longitude}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    style={{ color: 'var(--brand-primary)', textDecoration: 'underline', fontSize: '0.8rem' }}
-                                >
-                                    {t('dashboard.assigned.view_map')}
-                                </a>
-                            </div>
-                            <div>
-                                <strong style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{t('dashboard.assigned.contact_label')}</strong>
-                                {sos.user?.name || 'Unknown User'}
-                                <br />
-                                {sos.user?.phone || sos.contact_phone || 'No phone provided'}
-                            </div>
-                        </div>
-
-                        <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem' }}>
-                            <div style={{ flex: 1 }}>
-                                <strong style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase' }}>{t('dashboard.assigned.people_label')}</strong>
-                                {sos.people_count || 1}
-                            </div>
+                        <div className="sos-info-row">
+                            <div><strong>📍 {t('dashboard.sos_card.unknown_loc')}:</strong> {sos.address || 'Reported Location'}</div>
+                            <div><strong>👤 {t('dashboard.sos_card.reporter')}:</strong> {sos.user?.name || 'User'}</div>
+                            {sos.contact_phone && (
+                                <div><strong>📞 {t('dashboard.sos_card.contact')}:</strong> {sos.contact_phone}</div>
+                            )}
                         </div>
 
                         {sos.description && (
-                            <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)' }}>
-                                <strong style={{ display: 'block', color: 'var(--text-secondary)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{t('dashboard.assigned.desc_label')}</strong>
-                                {sos.description}
-                            </div>
+                            <p className="sos-quote">"{sos.description}"</p>
                         )}
+
+                        <div className="sos-card-actions">
+                            {trackingIds.has(sos.id) ? (
+                                <button className="btn btn-warning btn-sm" onClick={() => stopTracking(sos.id)}>
+                                    {t('dashboard.assigned.btn.stop_tracking')}
+                                </button>
+                            ) : (
+                                <button className="btn btn-primary btn-sm" onClick={() => startTracking(sos.id)}>
+                                    {t('dashboard.assigned.btn.start_tracking')}
+                                </button>
+                            )}
+                            <button className="btn btn-success btn-sm" onClick={() => handleResolve(sos.id)}>
+                                {t('dashboard.assigned.btn.resolve')}
+                            </button>
+                        </div>
                     </div>
                 );
             })}

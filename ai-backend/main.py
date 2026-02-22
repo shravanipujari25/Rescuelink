@@ -93,7 +93,9 @@ async def triage(request: EmergencyRequest):
 
     # 2️⃣ Gemini fallback
     try:
-        ai_response = get_gemini_response(request.message)
+        if request.imageBase64:
+            print("📸 Gemini Vision Triggered")
+        ai_response = get_gemini_response(request.message, request.imageBase64)
     except Exception as e:
         raise HTTPException(status_code=500, detail="Gemini AI failed")
 

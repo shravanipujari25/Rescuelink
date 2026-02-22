@@ -9,15 +9,17 @@ export default function SOSRequestPage() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [location, setLocation] = useState(null);
-    const [step, setStep] = useState(1);
     const { t } = useTranslation();
 
     const [formData, setFormData] = useState({
         emergency_type: '',
         people_count: 1,
         description: '',
-        contact_phone: '' // Optional, maybe pre-fill from user
+        contact_phone: '',
+        imageBase64: null
     });
+
+    const [imagePreview, setImagePreview] = useState(null);
 
     const EMERGENCY_TYPES = [
         { value: 'medical', label: t('sos.types.medical'), icon: '🚑', desc: t('sos.types.medical_desc'), color: '#ef4444' },
@@ -30,7 +32,6 @@ export default function SOSRequestPage() {
     ];
 
     useEffect(() => {
-        // Get location immediately on load
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
@@ -48,6 +49,23 @@ export default function SOSRequestPage() {
         }
     }, [t]);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 3 * 1024 * 1024) {
+            toast.error(t('sos.messages.image_too_large') || "Image must be under 3MB");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setFormData(prev => ({ ...prev, imageBase64: reader.result }));
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!location) {
@@ -63,13 +81,13 @@ export default function SOSRequestPage() {
         try {
             await sosApi.create({
                 ...formData,
-                severity: 'high', // Default high for explicit form reports
+                severity: 'high',
                 latitude: location.latitude,
                 longitude: location.longitude,
             });
 
             toast.success(t('sos.messages.success'));
-            navigate('/dashboard'); // Or to a specific tracking page
+            navigate('/dashboard');
         } catch (err) {
             console.error(err);
             toast.error(err.message || t('sos.messages.failed'));
@@ -90,8 +108,6 @@ export default function SOSRequestPage() {
                 </header>
 
                 <form onSubmit={handleSubmit} className="sos-form">
-
-                    {/* Section 1: Emergency Type */}
                     <div className="form-section">
                         <label className="section-label">{t('sos.request.sections.type')}</label>
                         <div className="type-grid-large">
@@ -113,7 +129,6 @@ export default function SOSRequestPage() {
                         </div>
                     </div>
 
-                    {/* Section 2: Details */}
                     <div className="form-row">
                         <div className="form-group">
                             <label>{t('sos.request.sections.people')}</label>
@@ -152,7 +167,41 @@ export default function SOSRequestPage() {
                         ></textarea>
                     </div>
 
-
+                    <div className="form-group vision-upload">
+                        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span>🖼️ {t('sos.request.sections.photo') || "Add Emergency Photo (Optional)"}</span>
+                            {formData.imageBase64 && (
+                                <span className="vision-badge">📸 Gemini Vision Assisted</span>
+                            )}
+                        </label>
+                        <div className="photo-input-wrapper">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="photo-input"
+                                id="photo-upload"
+                                style={{ display: 'none' }}
+                            />
+                            <label htmlFor="photo-upload" className="photo-btn">
+                                {imagePreview ? (
+                                    <div className="photo-preview-container">
+                                        <img src={imagePreview} alt="Preview" className="photo-preview" />
+                                        <button type="button" className="remove-photo" onClick={(e) => {
+                                            e.preventDefault();
+                                            setFormData(p => ({ ...p, imageBase64: null }));
+                                            setImagePreview(null);
+                                        }}>✕</button>
+                                    </div>
+                                ) : (
+                                    <div className="photo-placeholder">
+                                        <span>📷</span>
+                                        <p>Upload Situation Photo</p>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+                    </div>
 
                     <button
                         type="submit"

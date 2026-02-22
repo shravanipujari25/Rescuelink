@@ -213,3 +213,91 @@
         gap: 0;
     }
 }
+
+/* 📸 Vision Assisted Photo Upload Styles */
+.vision-upload {
+    margin-top: 20px;
+}
+
+.vision-badge {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(129, 140, 248, 0.3);
+}
+
+.photo-input-wrapper {
+    margin-top: 10px;
+}
+
+.photo-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 120px;
+    background: #2a3142;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.photo-btn:hover {
+    background: #333b4d;
+    border-color: rgba(255, 59, 48, 0.3);
+}
+
+.photo-placeholder {
+    text-align: center;
+    color: #94a3b8;
+}
+
+.photo-placeholder span {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.photo-placeholder p {
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.photo-preview-container {
+    position: relative;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.photo-preview {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.remove-photo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}

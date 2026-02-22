@@ -1,4 +1,5 @@
 import express from 'express';
+
 import helmet from 'helmet';
 import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
@@ -17,6 +18,12 @@ import publicRoutes from './routes/public.routes.js';
 
 
 const app = express();
+
+// ---------------------------------------------------------------------------
+// Request parsing (Must be early for large payloads)
+// ---------------------------------------------------------------------------
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 // ---------------------------------------------------------------------------
 // Security middleware
@@ -52,7 +59,7 @@ const limiter = rateLimit({
     },
 });
 
-app.use(limiter);
+// app.use(limiter); // Applied per-route below to avoid interference with large payloads
 
 // Stricter limiter for auth endpoints
 const authLimiter = rateLimit({
@@ -69,16 +76,14 @@ const authLimiter = rateLimit({
 // ---------------------------------------------------------------------------
 // Request parsing & logging
 // ---------------------------------------------------------------------------
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(requestId);
 app.use(httpLogger);
 
 // ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
-app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/auth', authLimiter, logoutRoutes);
+app.use('/api/auth', limiter, authLimiter, authRoutes);
+app.use('/api/auth', limiter, authLimiter, logoutRoutes);
 
 // Admin routes — stricter rate limit
 const adminLimiter = rateLimit({
@@ -88,7 +93,7 @@ const adminLimiter = rateLimit({
     legacyHeaders: false,
     message: { success: false, message: 'Too many admin requests. Slow down.' },
 });
-app.use('/api/admin', adminLimiter, adminRoutes);
+app.use('/api/admin', limiter, adminLimiter, adminRoutes);
 
 app.use('/api/sos/live-location', liveRoutes);
 app.use('/api/sos', sosRoutes);
