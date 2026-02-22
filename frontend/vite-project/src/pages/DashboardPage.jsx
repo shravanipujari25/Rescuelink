@@ -166,7 +166,10 @@ export default function DashboardPage() {
                 <div className="app-brand">
                     <div className="app-brand-logo">🛡</div>
                     <span className="app-brand-name">RescueLink</span>
-                    <div className="app-brand-dot" />
+                    <div className={`mesh-status-indicator ${navigator.onLine ? 'online' : 'offline'}`} title={navigator.onLine ? 'Cloud Sync Active' : 'Mesh Network Active'}>
+                        <span className="status-dot"></span>
+                        <span className="status-label">{navigator.onLine ? 'Cloud' : 'Mesh'}</span>
+                    </div>
                 </div>
 
                 <nav className="topbar-nav" style={{
@@ -409,10 +412,16 @@ export default function DashboardPage() {
 
                 {activeTab === 'profile' && (
                     <div className="animate-fadeIn">
-                        <div className="page-header">
-                            <h1>{t('dashboard.profile.title')}</h1>
-                            <p>{t('dashboard.profile.desc')}</p>
-                        </div>
+                        <header className="dashboard-header">
+                            <div className="header-top">
+                                <div className="mesh-status-indicator" title="Mesh Network Status">
+                                    <span className={`status-dot ${navigator.onLine ? 'online' : 'mesh'}`}></span>
+                                    {navigator.onLine ? 'Cloud Active' : 'Mesh Mode'}
+                                </div>
+                                <LanguageSelector />
+                            </div>
+                            <h1>{t('dashboard.welcome')}</h1>
+                        </header>
 
                         <div className="profile-card animate-slideUp" style={{ marginBottom: 'var(--space-6)' }}>
                             <div className="profile-avatar">{roleInfo.icon}</div>

@@ -32,7 +32,9 @@ const locationField = z
 // ---------------------------------------------------------------------------
 const citizenSchema = z.object({
     role: z.literal('citizen'),
-    name: z.string({ required_error: 'Name is required' }).min(2).trim(),
+    name: z.string().min(2).trim().optional(),
+    full_name: z.string().min(2).trim().optional(),
+
     email: emailField,
     phone: phoneField,
     password: passwordField,
@@ -56,7 +58,9 @@ const ngoSchema = z.object({
 
 const volunteerSchema = z.object({
     role: z.literal('volunteer'),
-    name: z.string({ required_error: 'Name is required' }).min(2).trim(),
+    name: z.string().min(2).trim().optional(),
+    full_name: z.string().min(2).trim().optional(),
+
     email: emailField,
     phone: phoneField,
     skills: z.array(z.string().min(1)).min(1, 'At least one skill is required'),

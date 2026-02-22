@@ -306,8 +306,12 @@ export const forgotPassword = async (data, requestId) => {
 
     const displayName = user.name || user.contact_person || user.ngo_name || 'User';
     try {
-        await sendForgotPasswordEmail(email, displayName, otp);
-        logger.info({ requestId, userId: user.id }, 'Forgot password email sent');
+        if (typeof sendForgotPasswordEmail === 'function') {
+            await sendForgotPasswordEmail(email, displayName, otp);
+            logger.info({ requestId, userId: user.id }, 'Forgot password email sent');
+        } else {
+            logger.error({ requestId, userId: user.id }, 'sendForgotPasswordEmail is not a function at runtime');
+        }
     } catch (emailErr) {
         logger.error({ requestId, err: emailErr }, 'Failed to send forgot password email');
     }
@@ -366,10 +370,11 @@ export const resetPassword = async (data, requestId) => {
 function buildRoleFields(role, rest) {
     switch (role) {
         case 'citizen':
-            return { name: rest.name, email: rest.email, phone: rest.phone };
+            return { name: rest.full_name || rest.name, email: rest.email, phone: rest.phone };
         case 'ngo':
             return {
-                ngo_name: rest.ngo_name,
+                name: rest.name || rest.contact_person,
+                ngo_name: rest.ngo_name || rest.name,
                 contact_person: rest.contact_person,
                 email: rest.email,
                 services: rest.services,

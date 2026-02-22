@@ -3,12 +3,17 @@ import { AppError } from '../../middleware/error.middleware.js';
 
 export const sosRepository = {
     async create(data) {
-        const { data: sos, error } = await supabase
-            .from('sos_requests')
-            .insert(data)
-            .select()
-            .single();
+        // Use upsert to handle deduplication based on offline_id (if provided)
+        const query = supabase.from('sos_requests');
 
+        let result;
+        if (data.offline_id) {
+            result = await query.upsert(data, { onConflict: 'offline_id' }).select().single();
+        } else {
+            result = await query.insert(data).select().single();
+        }
+
+        const { data: sos, error } = result;
         if (error) throw new AppError(error.message, 500);
         return sos;
     },

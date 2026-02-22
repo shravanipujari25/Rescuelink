@@ -94,7 +94,7 @@ export default function SOSRequestPage() {
 
         setLoading(true);
         try {
-            await sosApi.create({
+            const result = await sosApi.create({
                 ...formData,
                 severity: 'high',
                 latitude: location.latitude,
@@ -102,7 +102,16 @@ export default function SOSRequestPage() {
                 address: address, // Send the human-readable address
             });
 
-            toast.success(t('sos.messages.success'));
+            // Check if it was queued (offline) or sent (online)
+            if (result && result.offline_id && !navigator.onLine) {
+                toast.success(t('sos.messages.offline_queued') || 'Internet down. SOS broadcasting via Mesh Network! 📶', {
+                    duration: 6000,
+                    icon: '📡'
+                });
+            } else {
+                toast.success(t('sos.messages.success'));
+            }
+
             navigate('/dashboard');
         } catch (err) {
             console.error(err);
@@ -121,6 +130,12 @@ export default function SOSRequestPage() {
                     </button>
                     <h1>{t('sos.request.title')}</h1>
                     <p>{t('sos.request.subtitle')}</p>
+
+                    {!navigator.onLine && (
+                        <div className="offline-banner">
+                            <span className="blink">📶</span> {t('sos.request.offline_mode') || 'Offline Mode: Mesh Active'}
+                        </div>
+                    )}
                 </header>
 
                 <form onSubmit={handleSubmit} className="sos-form">

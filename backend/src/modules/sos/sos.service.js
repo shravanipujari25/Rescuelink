@@ -18,10 +18,15 @@ export const sosService = {
             address: data.address,
             people_count: data.people_count || 1,
             contact_phone: data.contact_phone,
-            status: 'active'
+            status: 'active',
+            // Mesh Metadata
+            offline_id: data.offline_id,
+            is_relayed: data.is_relayed || false,
+            relayed_by: data.relayed_by || (data.is_relayed ? userId : null),
+            reported_at: data.reported_at || new Date().toISOString()
         };
 
-        // 1. Create the SOS record immediately
+        // 1. Create/Upsert the SOS record
         let sos;
         try {
             logger.info({ sosData }, 'Inserting SOS into database');

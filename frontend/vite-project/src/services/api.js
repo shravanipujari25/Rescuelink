@@ -1,6 +1,6 @@
-// In development: use direct URL to bypass proxy limits if needed, or relative /api
-const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'https://rescuelink-backend-q4ub.onrender.com/api' : '/api');
+import { OfflineService } from './OfflineService';
 
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
 /**
  * api — thin fetch wrapper that:
  * - Attaches Authorization header from localStorage automatically
@@ -90,7 +90,18 @@ export const adminApi = {
 // SOS
 // ---------------------------------------------------------------------------
 export const sosApi = {
-    create: (body) => api('/sos', { method: 'POST', body }),
+    create: async (body) => {
+        try {
+            return await api('/sos', { method: 'POST', body });
+        } catch (err) {
+            // If it's a network error (no internet), queue it!
+            if (!navigator.onLine || err.message === 'Failed to fetch' || err.name === 'TypeError') {
+                console.warn('[api] Device offline or network failed. Queuing SOS locally.');
+                return OfflineService.queueSOS(body);
+            }
+            throw err;
+        }
+    },
     getAssigned: (params = {}) => {
         const query = new URLSearchParams(params).toString();
         return api(`/sos/assigned${query ? `?${query}` : ''}`);

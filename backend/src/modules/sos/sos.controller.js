@@ -5,7 +5,11 @@ import { AppError } from '../../middleware/error.middleware.js';
 export const sosController = {
     async createSOS(req, res, next) {
         try {
-            const { emergency_type, severity, description, latitude, longitude, address, people_count, contact_phone, imageBase64 } = req.body;
+            const {
+                emergency_type, severity, description, latitude, longitude, address,
+                people_count, contact_phone, imageBase64,
+                offline_id, is_relayed, relayed_by, reported_at
+            } = req.body;
             const { userId } = req.user;
 
             if (!emergency_type || !latitude || !longitude) {
@@ -21,7 +25,11 @@ export const sosController = {
                 address,
                 people_count,
                 contact_phone,
-                imageBase64
+                imageBase64,
+                offline_id,
+                is_relayed,
+                relayed_by,
+                reported_at
             });
 
             res.status(201).json({ status: 'success', data: sos });

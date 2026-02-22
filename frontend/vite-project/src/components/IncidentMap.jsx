@@ -44,21 +44,34 @@ const createCustomIcon = (priority) => {
 };
 
 /**
- * Helper component to fit map to markers
+ * Helper component to manage map view (fitting bounds and focusing)
  */
-function ChangeView({ markers }) {
+function MapController({ markers, focusLocation }) {
     const map = useMap();
+
     useEffect(() => {
+        // 1. Initial fit to all markers
         if (markers && markers.length > 0) {
-            const bounds = L.latLngBounds(markers.map(m => [m.latitude, m.longitude]));
+            const bounds = L.latLngBounds(markers.filter(m => m.latitude && m.longitude).map(m => [m.latitude, m.longitude]));
             map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
         }
     }, [markers, map]);
+
+    useEffect(() => {
+        // 2. Focus on a specific location if provided (e.g., from Dashboard list)
+        if (focusLocation && focusLocation.lat && focusLocation.lng) {
+            map.setView([focusLocation.lat, focusLocation.lng], 16, { animate: true });
+        }
+    }, [focusLocation, map]);
+
     return null;
 }
 
-export default function IncidentMap({ incidents = [] }) {
+export default function IncidentMap({ incidents = [], focusLocation = null }) {
     const { t } = useTranslation();
+
+    // Alias createCustomIcon to getIcon if that's what's used in the JSX
+    const getIcon = (incident) => createCustomIcon(incident.priority);
 
     // Default center (Pune, India coordinates from user request)
     const defaultCenter = [18.5204, 73.8567];
