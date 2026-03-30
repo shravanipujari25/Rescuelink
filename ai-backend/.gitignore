@@ -4,6 +4,7 @@
 venv/
 .env/
 .venv/
+myenv/
 
 # -----------------------------
 # Environment Variables
@@ -40,3 +41,9 @@ htmlcov/
 # -----------------------------
 .DS_Store
 Thumbs.db
+
+# -----------------------------
+# Machine Learning Artifacts
+# -----------------------------
+*.csv
+*.pkl

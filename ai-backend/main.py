@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
-from app.models import EmergencyRequest, EmergencyResponse, TriageResponse
+from app.models import EmergencyRequest, EmergencyResponse, TriageResponse, PredictionRequest, PredictionResponse
 from app.services.rule_classifier import classify_rule_based
 from app.services.gemini_service import get_gemini_response
+from app.services.prediction_service import prediction_service
 import os
 from dotenv import load_dotenv
 
@@ -51,7 +52,10 @@ async def emergency_assistant(request: EmergencyRequest):
         
     # 2. Fallback to Gemini
     print(f"Calling Gemini for: {request.message}")
-    ai_response = get_gemini_response(request.message)
+    try:
+        ai_response = get_gemini_response(request.message, request.imageBase64)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI Assistance Failed: {str(e)}")
     
     # 3. SAFETY GUARD: Enforce SOS Rule
     if ai_response.severity_level != "high":
@@ -97,7 +101,7 @@ async def triage(request: EmergencyRequest):
             print("📸 Gemini Vision Triggered")
         ai_response = get_gemini_response(request.message, request.imageBase64)
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Gemini AI failed")
+        raise HTTPException(status_code=500, detail=f"AI Triage Failed: {str(e)}")
 
     severity_score = ai_response.urgency_score or 5
     priority = calculate_priority(severity_score, injured, trapped)
@@ -116,3 +120,11 @@ async def triage(request: EmergencyRequest):
 @app.get("/")
 def read_root():
     return {"message": "AI Triage Service Running"}
+
+@app.post("/api/ai/predict-disaster", response_model=PredictionResponse)
+async def predict_disaster(request: PredictionRequest):
+    try:
+        response = prediction_service.predict(request)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

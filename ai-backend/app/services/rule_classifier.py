@@ -143,34 +143,28 @@ def classify_rule_based(message: str) -> EmergencyResponse | None:
 
     if detected:
         # Check for High Severity escalation within identified category
-        # This handles cases where user says "Flood... trapped" (Step 1 might miss if "trapped" wasn't in flood list)
-        
-        escalation_keywords = ["trapped", "emergency", "help", "critical", "dying", "accident", "dying", "panicking", "scared"]
+        escalation_keywords = ["trapped", "emergency", "help", "critical", "dying", "accident", "panicking", "scared"]
         if any(k in message_lower for k in escalation_keywords):
-             # If category is identified and has generic escalation words, UPGRADE?
-             # User said: "Flood... people trapped" -> High.
-             # My step 1 check missed "people trapped" for flood (I removed it).
-             # So we need to catch it here.
-             
-             # If "trapped" is present, it's almost always High.
+             sentiment = "panicked" if any(w in message_lower for w in ["panick", "scared", "dying"]) else "anxious"
+             explanation = f"Detected escalated {classification} situation."
              if "trapped" in message_lower:
-                 sentiment = "panicked" if "panick" in message_lower or "scared" in message_lower else "anxious"
-                 return EmergencyResponse(
-                    classification=classification,
-                    severity_level="high",
-                    sentiment=sentiment,
-                    urgency_score=9,
-                    recommend_sos=True,
-                    explanation=f"Detected high severity {classification} situation with signs of distress.",
-                    guidance=get_guidance(classification)
-                )
+                 explanation += " Entrapment reported."
+                 
+             return EmergencyResponse(
+                classification=classification,
+                severity_level="high",
+                sentiment=sentiment,
+                urgency_score=9,
+                recommend_sos=True,
+                explanation=explanation,
+                guidance=get_guidance(classification)
+            )
 
     if not detected:
-        # One last check for generic high risk that implies a category?
-        # e.g. "people trapped" -> likely earthquake/collapse if no other context?
+        # Generic high risk fallback check if pattern wasn't strongly matched
         if "trapped" in message_lower or "collapsed" in message_lower:
              return EmergencyResponse(
-                classification="earthquake", # Assuming entrapment implies structural issue/collapse default
+                classification="earthquake",
                 severity_level="high",
                 sentiment="scared",
                 urgency_score=10,

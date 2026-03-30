@@ -22,3 +22,17 @@ class TriageResponse(BaseModel):
     priority: Literal["low", "medium", "high", "critical"]
     confidence: float
     source: Literal["rules", "gemini"]
+
+class PredictionRequest(BaseModel):
+    Temperature: float
+    Humidity: float
+    Wind_Speed: float
+    Precipitation: float
+    River_Water_Level: float
+    Soil_Moisture: float
+    Seismic_Activity: float
+    Atmospheric_Pressure: float
+
+class PredictionResponse(BaseModel):
+    predicted_disaster: str
+    probabilities: dict

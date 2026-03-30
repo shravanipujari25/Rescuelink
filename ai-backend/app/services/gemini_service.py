@@ -6,11 +6,16 @@ from app.models import EmergencyResponse
 
 # Configure Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY environment variable is effectively required but missing.")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 # Using gemini-1.5-flash for multimodal capabilities (free tier)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel(
+    'gemini-1.5-flash',
+    generation_config={"response_mime_type": "application/json"}
+)
 
 def get_gemini_response(message: str, imageBase64: str = None) -> EmergencyResponse:
     prompt_template = """
@@ -33,7 +38,7 @@ def get_gemini_response(message: str, imageBase64: str = None) -> EmergencyRespo
       "sentiment": "...",
       "urgency_score": 1,
       "guidance": ["Step 1", "Step 2"],
-      "recommend_sos": true/false,
+      "recommend_sos": true,
       "explanation": "..."
     }}
     """
@@ -41,47 +46,25 @@ def get_gemini_response(message: str, imageBase64: str = None) -> EmergencyRespo
     vision_extra = "If an image is provided, use it to assess the severity, disaster type, and any visible risks." if imageBase64 else ""
     prompt = prompt_template.format(message=message, vision_extra=vision_extra)
     
+    content = [prompt]
+    
+    if imageBase64:
+        # Handle data URL if present
+        if "," in imageBase64:
+            imageBase64 = imageBase64.split(",")[1]
+        
+        image_bytes = base64.b64decode(imageBase64)
+        content.append({
+            "mime_type": "image/jpeg",
+            "data": image_bytes
+        })
+        print("📸 Vision Assisted Analysis running...")
+
+    # Will cleanly throw if external fetch fails (e.g. 503, 401 Auth)
+    response = model.generate_content(content)
+    
     try:
-        content = [prompt]
-        
-        if imageBase64:
-            # Handle data URL if present
-            if "," in imageBase64:
-                imageBase64 = imageBase64.split(",")[1]
-            
-            image_bytes = base64.b64decode(imageBase64)
-            content.append({
-                "mime_type": "image/jpeg",
-                "data": image_bytes
-            })
-            print("📸 Vision Assisted Analysis running...")
-
-        response = model.generate_content(content)
-        response_text = response.text
-        
-        # Robust JSON extraction from markdown or raw text
-        if "```json" in response_text:
-            response_text = response_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in response_text:
-            response_text = response_text.split("```")[1].split("```")[0].strip()
-        else:
-            # Final safety: strip anything that might be wrapping the JSON
-            response_text = response_text.replace("```json", "").replace("```", "").strip()
-            
-        data = json.loads(response_text)
+        data = json.loads(response.text)
         return EmergencyResponse(**data)
-        
-    except Exception as e:
-        print(f"Error calling Gemini: {e}")
-        return EmergencyResponse(
-            classification="other",
-            severity_level="medium", 
-            sentiment="calm",
-            urgency_score=5,
-            guidance=[
-                "If you are in danger, please move to a safe location immediately and wait for rescuers."
-            ],
-            recommend_sos=False,
-            explanation="AI analysis failed or timed out."
-        )
-
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Failed to parse Gemini JSON output safely: {e}\nRaw output: {response.text}")
