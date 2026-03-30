@@ -199,7 +199,7 @@ export const unsuspendUser = async (userId, adminId, requestId) => {
 export const getDashboardStats = async (requestId) => {
     const { data, error } = await supabase
         .from('users')
-        .select('role, status, verification_status');
+        .select('role, status, verification_status, email_verified');
 
     if (error) {
         logger.error({ requestId, err: error }, 'Failed to fetch dashboard stats');
@@ -246,7 +246,8 @@ export const getDashboardStats = async (requestId) => {
         stats.byStatus[user.status] = (stats.byStatus[user.status] || 0) + 1;
         if (
             (user.status === 'pending' || user.status === 'inactive') &&
-            user.verification_status === 'pending'
+            user.verification_status === 'pending' &&
+            user.email_verified === true
         ) {
             stats.pendingApproval++;
         }
